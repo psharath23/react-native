@@ -7,6 +7,7 @@
 import React, { Component } from 'react';
 import * as RNFS from 'react-native-fs';
 import _ from 'lodash'
+import ListMenu from './components/listMenu'
 import {
   Platform,
   StyleSheet,
@@ -19,11 +20,11 @@ import {
   BackHandler,
   Modal,
   Image,
-  Alert
+  Alert,
+  ToastAndroid,
+  Dimensions
 } from 'react-native';
-import ListMenu from './components/listMenu'
 import FileSystem from './components/fileSystem'
-import LongPressInfo from './components/longPressInfo'
 import { validStyles } from './validstyleprops'
 const instructions = Platform.select({
   ios: 'Press Cmd+R to reload,\n' +
@@ -37,60 +38,117 @@ export default class App extends Component {
     super(props);
     this.state = {
       pathStack: [RNFS.ExternalStorageDirectoryPath],
-      longPressOption: '',
-      longPressed: '',
-      source: '',
-      destination: '',
-      isModalVisible: false
+      source: [],
+      destination: [],
+      isMenuClicked: false,
+      selectedOption: ''
     }
-    BackHandler.addEventListener('hardwareBackPress', () => {
-      console.log('back clicked')
-      this.back();
-      if (this.state.pathStack.length === 1) {
-        BackHandler.exitApp();
-      } else {
-        return true;
-      }
-    })
   }
-  data = [];
   _toolbarActions = () => [
-    { title: 'back', icon: require('./res/toolbar/back.png'), show: 'always' },
     { title: 'menu', icon: require('./res/toolbar/menu.png'), show: 'always' }
   ];
   _onActionSelected = (position) => {
     switch (position) {
-      case 0: this.back();
+      case 0: this.setState({ isMenuClicked: !this.state.isMenuClicked })
         break;
     }
   }
-  cancelOperation = () => {
-
+  fileSystemProps = () => ({
+    setPropsToState: this.setPropsToState,
+    source: this.state.source,
+    destination: this.state.destination,
+    selectedOption: this.state.selectedOption,
+    pathStack:this.state.pathStack
+  })
+  longPressData = {
+    data: ['copy', 'delete', 'move'],
+    style: styles,
+    onPress: (option) => this.onOptionSelected(option)
+  }
+  back = () => {
+    let _pathStack = this.state.pathStack
+    if (_pathStack.length !== 1) {
+        _pathStack.pop();
+    }
     this.setState({
-      longPressOption: '',
-      longPressed: '',
-      source: '',
-      destination: ''
-    }, () => {
+        pathStack: _pathStack
     })
+
+}
+  onOptionSelected = (option) => {
+    this.setState({ selectedOption: option });
+    switch (option) {
+      case 'delete': {
+        this.delete();
+      }
+      case 'copy':{
+        this.copy();
+      }
+      case 'move':{
+        this.move();
+      }
+    }
   }
-  fileSystemProps = {
-    setPropsToState: this.setPropsToState,
-    modalVisibilityHandler: this.modalVisibilityHandler,
-    style: styles, onOptionSelected: this.onOptionSelected,
-    onLongPress: this.onLongPress,
-    onPress: this.onPress,
-    longPressOption: this.state.longPressOption,
-    longPressed: this.state.longPressed,
-    source: this.state.source,
-    destination: this.state.destination
+  copy = () => {
+    if(this.state.source.length===0){
+      ToastAndroid.show(`No file(s)/folder(s) selected`, ToastAndroid.SHORT);
+      return ;
+    }
+    let copyCount=0;
+    _.each(this.state.source, (source) => {
+      _.each(this.state.destination, (destination) => {
+        RNFS.copyFile(source, destination + '/' + _.last(source.split('/')))
+          .then((copy) => {
+            ToastAndroid.show(`${_.last(source.split('/'))} copied to ${destination}`, ToastAndroid.SHORT);
+            copyCount++;
+          })
+          .catch((err) => {
+            ToastAndroid.show(`failed to copy ${_.last(source.split('/'))} to ${destination}`, ToastAndroid.SHORT);
+          })
+      });
+    });
+    ToastAndroid.show(`total ${copyCount} file(s)/folder(s) copied out of ${this.state.source.length}`, ToastAndroid.SHORT);
+    this.setState({ source: [], destination: [] });
   }
-  longPressInfoProps = {
-    setPropsToState: this.setPropsToState,
-    cancelOperation: this.cancelOperation,
-    longPressOption: this.state.longPressOption,
-    source: this.state.source,
-    destination: this.state.destination
+  move = () => {
+    if(this.state.source.length===0){
+      ToastAndroid.show(`No file(s)/folder(s) selected`, ToastAndroid.SHORT);
+      return ;
+    }
+    let moveCount=0;
+    _.each(this.state.source, (source) => {
+      _.each(this.state.destination, (destination) => {
+        RNFS.moveFile(source, destination + '/' + _.last(source.split('/')))
+          .then((move) => {
+            ToastAndroid.show(`${_.last(source.split('/'))} moved to ${destination}`, ToastAndroid.SHORT);
+            moveCount++;
+          })
+          .catch((err) => {
+            ToastAndroid.show(`failed to move ${_.last(source.split('/'))} to ${destination}`, ToastAndroid.SHORT);
+          })
+      });
+    });
+    ToastAndroid.show(`total ${moveCount} file(s)/folder(s) moved out of ${this.state.source.length}`, ToastAndroid.SHORT);
+    this.setState({ source: [], destination: [] });
+  }
+  delete = () => {
+    if(this.state.source.length===0){
+      ToastAndroid.show(`No file(s)/folder(s) selected`, ToastAndroid.SHORT);
+      return ;
+    }
+    let deletedCount = 0;
+    _.each(this.state.source, (source) => {
+      RNFS.unlink(source)
+        .then((res) => {
+          ToastAndroid.show(`${source} deleted`, ToastAndroid.SHORT);
+          deletedCount++;
+        })
+        .catch((err) => {
+          ToastAndroid.show(`failed to delete ${source}`, ToastAndroid.SHORT);
+        })
+    });
+    ToastAndroid.show(`total ${deletedCount} file(s)/folder(s) deleted`, ToastAndroid.SHORT);
+    this.setState({ source: [] });
   }
   modalVisibilityHandler = () => {
     this.setState({ isModalVisible: !this.state.isModalVisible })
@@ -106,20 +164,17 @@ export default class App extends Component {
             title='File Manager'
             actions={this._toolbarActions()}
             onActionSelected={this._onActionSelected}
+            navIcon={require('./res/toolbar/back.png')}
+            onIconClicked={this.back}
           />
         </View>
         <View>
-          <Modal
-            style={styles.modal}
-            visible={this.state.isModalVisible}
-            onRequestClose={() => { this.setState({ isModalVisible: false }) }}
-            transparent={true}
-          >
-            <LongPressInfo {...this.longPressInfoProps} />
-          </Modal>
+          {
+            this.state.isMenuClicked === true && <ListMenu  {...this.longPressData} />
+          }
         </View>
-        <View>
-          <FileSystem {...this.fileSystemProps} />
+        <View style={{overflow:'visible',height:Dimensions.get('window').height-70}}>
+          <FileSystem {...this.fileSystemProps()} />
         </View>
       </View >
     );
@@ -128,7 +183,7 @@ export default class App extends Component {
 
 const styles = StyleSheet.create({
   container: {
-    flex: 1,
+    // flex: 1,
     // justifyContent: 'center',
     // alignItems: 'center',
     backgroundColor: '#303a4c',
@@ -204,10 +259,13 @@ const styles = StyleSheet.create({
     color: '#ffffff',
     fontWeight: 'bold'
   },
-  modal: {
-    flex: 1,
-    alignItems: 'center',
-    backgroundColor: '#f7021a',
-    padding: 100
-  },
+  menuList:{
+    position:'absolute',
+    right:20,
+    top:-10,
+    width:100,
+    backgroundColor:'#ffffff',
+    zIndex:1
+  }
+
 });

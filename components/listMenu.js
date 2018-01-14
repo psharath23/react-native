@@ -8,13 +8,13 @@ export class ListMenu extends Component {
     render() {
         return (
             <FlatList
-                style={this.props.style.list}
+                style={this.props.style.menuList}
                 data={this.props.data}
                 keyExtractor={(item) => item}
                 renderItem={
                     ({ item }) =>
                         <TouchableOpacity onPress={this.props.onPress.bind(this, item)}>
-                            <Text style={this.props.style.listItem}>{item}</Text>
+                            <Text style={[this.props.style.listItem,{textAlign:'center'}]}>{item}</Text>
                         </TouchableOpacity>
                 }
             />

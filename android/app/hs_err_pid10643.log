@@ -1,0 +1,335 @@
+#
+# There is insufficient memory for the Java Runtime Environment to continue.
+# Native memory allocation (mmap) failed to map 33554432 bytes for committing reserved memory.
+# Possible reasons:
+#   The system is out of physical RAM or swap space
+#   In 32 bit mode, the process size limit was hit
+# Possible solutions:
+#   Reduce memory load on the system
+#   Increase physical memory or swap space
+#   Check if swap backing store is full
+#   Use 64 bit Java on a 64 bit OS
+#   Decrease Java heap size (-Xmx/-Xms)
+#   Decrease number of Java threads
+#   Decrease Java thread stack sizes (-Xss)
+#   Set larger code cache with -XX:ReservedCodeCacheSize=
+# This output file may be truncated or incomplete.
+#
+#  Out of Memory Error (os_linux.cpp:2643), pid=10643, tid=0xb6b9cb40
+#
+# JRE version:  (8.0_151-b12) (build )
+# Java VM: OpenJDK Server VM (25.151-b12 mixed mode linux-x86 )
+# Failed to write core dump. Core dumps have been disabled. To enable core dumping, try "ulimit -c unlimited" before starting Java again
+#
+
+---------------  T H R E A D  ---------------
+
+Current thread (0xb6a07c00):  JavaThread "Unknown thread" [_thread_in_vm, id=10648, stack(0xb6b4c000,0xb6b9d000)]
+
+Stack: [0xb6b4c000,0xb6b9d000],  sp=0xb6b9bbf0,  free space=318k
+Native frames: (J=compiled Java code, j=interpreted, Vv=VM code, C=native code)
+V  [libjvm.so+0x8fa982]
+V  [libjvm.so+0x3899b6]
+V  [libjvm.so+0x752ca0]
+V  [libjvm.so+0x74cb93]
+V  [libjvm.so+0x7c766c]
+V  [libjvm.so+0x770a06]
+V  [libjvm.so+0x7c0556]
+V  [libjvm.so+0x779da5]
+V  [libjvm.so+0x8c13ad]
+V  [libjvm.so+0x8c158b]
+V  [libjvm.so+0x4d169e]
+V  [libjvm.so+0x8a5b5f]
+V  [libjvm.so+0x53f565]  JNI_CreateJavaVM+0x65
+C  [libjli.so+0x2444]
+C  [libpthread.so.0+0x627a]  start_thread+0xda
+C  [libc.so.6+0xe7ae6]  clone+0x66
+
+
+---------------  P R O C E S S  ---------------
+
+Java Threads: ( => current thread )
+
+Other Threads:
+
+=>0xb6a07c00 (exited) JavaThread "Unknown thread" [_thread_in_vm, id=10648, stack(0xb6b4c000,0xb6b9d000)]
+
+VM state:not at safepoint (not fully initialized)
+
+VM Mutex/Monitor currently owned by a thread: None
+
+GC Heap History (0 events):
+No events
+
+Deoptimization events (0 events):
+No events
+
+Internal exceptions (0 events):
+No events
+
+Events (0 events):
+No events
+
+
+Dynamic libraries:
+004e2000-004e3000 r-xp 00000000 08:06 139295     /usr/lib/jvm/java-8-openjdk-i386/jre/bin/java
+004e3000-004e4000 r-xp 00000000 08:06 139295     /usr/lib/jvm/java-8-openjdk-i386/jre/bin/java
+004e4000-004e5000 rwxp 00001000 08:06 139295     /usr/lib/jvm/java-8-openjdk-i386/jre/bin/java
+012dc000-012fd000 rwxp 00000000 00:00 0          [heap]
+66e00000-66e21000 rwxp 00000000 00:00 0 
+66e21000-66f00000 ---p 00000000 00:00 0 
+67000000-67021000 rwxp 00000000 00:00 0 
+67021000-67100000 ---p 00000000 00:00 0 
+6717e000-6717f000 ---p 00000000 00:00 0 
+6717f000-6720a000 rwxp 00000000 00:00 0 
+6720a000-67354000 ---p 00000000 00:00 0 
+67354000-6735a000 rwxp 00000000 00:00 0 
+6735a000-673ff000 ---p 00000000 00:00 0 
+673ff000-68980000 rwxp 00000000 00:00 0 
+68980000-91ec0000 ---p 00000000 00:00 0 
+91ec0000-92940000 rwxp 00000000 00:00 0 
+92940000-a7400000 ---p 00000000 00:00 0 
+a7422000-a7423000 ---p 00000000 00:00 0 
+a7423000-a74ae000 rwxp 00000000 00:00 0 
+a74ae000-a75f9000 ---p 00000000 00:00 0 
+a75f9000-a7602000 rwxp 00000000 00:00 0 
+a7602000-a79b9000 ---p 00000000 00:00 0 
+a79b9000-a7bf9000 rwxp 00000000 00:00 0 
+a7bf9000-b69b9000 ---p 00000000 00:00 0 
+b69b9000-b69cf000 r-xp 00000000 08:06 263281     /lib/i386-linux-gnu/libnsl-2.24.so
+b69cf000-b69d0000 r-xp 00016000 08:06 263281     /lib/i386-linux-gnu/libnsl-2.24.so
+b69d0000-b69d1000 rwxp 00017000 08:06 263281     /lib/i386-linux-gnu/libnsl-2.24.so
+b69d1000-b69d3000 rwxp 00000000 00:00 0 
+b69ee000-b69f6000 r-xp 00000000 08:06 139369     /usr/lib/jvm/java-8-openjdk-i386/jre/lib/i386/libzip.so
+b69f6000-b69f7000 r-xp 00007000 08:06 139369     /usr/lib/jvm/java-8-openjdk-i386/jre/lib/i386/libzip.so
+b69f7000-b69f8000 rwxp 00008000 08:06 139369     /usr/lib/jvm/java-8-openjdk-i386/jre/lib/i386/libzip.so
+b69f8000-b6a00000 rwxs 00000000 08:06 1096980    /tmp/hsperfdata_sharath/10643
+b6a00000-b6a26000 rwxp 00000000 00:00 0 
+b6a26000-b6b00000 ---p 00000000 00:00 0 
+b6b06000-b6b11000 r-xp 00000000 08:06 263287     /lib/i386-linux-gnu/libnss_files-2.24.so
+b6b11000-b6b12000 r-xp 0000a000 08:06 263287     /lib/i386-linux-gnu/libnss_files-2.24.so
+b6b12000-b6b13000 rwxp 0000b000 08:06 263287     /lib/i386-linux-gnu/libnss_files-2.24.so
+b6b13000-b6b19000 rwxp 00000000 00:00 0 
+b6b19000-b6b41000 r-xp 00000000 08:06 139348     /usr/lib/jvm/java-8-openjdk-i386/jre/lib/i386/libjava.so
+b6b41000-b6b42000 r-xp 00027000 08:06 139348     /usr/lib/jvm/java-8-openjdk-i386/jre/lib/i386/libjava.so
+b6b42000-b6b43000 rwxp 00028000 08:06 139348     /usr/lib/jvm/java-8-openjdk-i386/jre/lib/i386/libjava.so
+b6b43000-b6b4a000 r-xp 00000000 08:06 263331     /lib/i386-linux-gnu/librt-2.24.so
+b6b4a000-b6b4b000 r-xp 00006000 08:06 263331     /lib/i386-linux-gnu/librt-2.24.so
+b6b4b000-b6b4c000 rwxp 00007000 08:06 263331     /lib/i386-linux-gnu/librt-2.24.so
+b6b4c000-b6b4f000 ---p 00000000 00:00 0 
+b6b4f000-b6b9d000 rwxp 00000000 00:00 0 
+b6b9d000-b6bb8000 r-xp 00000000 08:06 263236     /lib/i386-linux-gnu/libgcc_s.so.1
+b6bb8000-b6bb9000 r-xp 0001a000 08:06 263236     /lib/i386-linux-gnu/libgcc_s.so.1
+b6bb9000-b6bba000 rwxp 0001b000 08:06 263236     /lib/i386-linux-gnu/libgcc_s.so.1
+b6bba000-b6c0d000 r-xp 00000000 08:06 263266     /lib/i386-linux-gnu/libm-2.24.so
+b6c0d000-b6c0e000 r-xp 00052000 08:06 263266     /lib/i386-linux-gnu/libm-2.24.so
+b6c0e000-b6c0f000 rwxp 00053000 08:06 263266     /lib/i386-linux-gnu/libm-2.24.so
+b6c0f000-b6d81000 r-xp 00000000 08:06 1053025    /usr/lib/i386-linux-gnu/libstdc++.so.6.0.24
+b6d81000-b6d87000 r-xp 00171000 08:06 1053025    /usr/lib/i386-linux-gnu/libstdc++.so.6.0.24
+b6d87000-b6d88000 rwxp 00177000 08:06 1053025    /usr/lib/i386-linux-gnu/libstdc++.so.6.0.24
+b6d88000-b6d8b000 rwxp 00000000 00:00 0 
+b6d8b000-b787d000 r-xp 00000000 08:06 139373     /usr/lib/jvm/java-8-openjdk-i386/jre/lib/i386/server/libjvm.so
+b787d000-b787e000 ---p 00af2000 08:06 139373     /usr/lib/jvm/java-8-openjdk-i386/jre/lib/i386/server/libjvm.so
+b787e000-b78ca000 r-xp 00af2000 08:06 139373     /usr/lib/jvm/java-8-openjdk-i386/jre/lib/i386/server/libjvm.so
+b78ca000-b78e1000 rwxp 00b3e000 08:06 139373     /usr/lib/jvm/java-8-openjdk-i386/jre/lib/i386/server/libjvm.so
+b78e1000-b7d02000 rwxp 00000000 00:00 0 
+b7d02000-b7eb3000 r-xp 00000000 08:06 263199     /lib/i386-linux-gnu/libc-2.24.so
+b7eb3000-b7eb5000 r-xp 001b0000 08:06 263199     /lib/i386-linux-gnu/libc-2.24.so
+b7eb5000-b7eb6000 rwxp 001b2000 08:06 263199     /lib/i386-linux-gnu/libc-2.24.so
+b7eb6000-b7eb9000 rwxp 00000000 00:00 0 
+b7eb9000-b7ebc000 r-xp 00000000 08:06 263222     /lib/i386-linux-gnu/libdl-2.24.so
+b7ebc000-b7ebd000 r-xp 00002000 08:06 263222     /lib/i386-linux-gnu/libdl-2.24.so
+b7ebd000-b7ebe000 rwxp 00003000 08:06 263222     /lib/i386-linux-gnu/libdl-2.24.so
+b7ebe000-b7ecb000 r-xp 00000000 08:06 139333     /usr/lib/jvm/java-8-openjdk-i386/jre/lib/i386/jli/libjli.so
+b7ecb000-b7ecc000 r-xp 0000c000 08:06 139333     /usr/lib/jvm/java-8-openjdk-i386/jre/lib/i386/jli/libjli.so
+b7ecc000-b7ecd000 rwxp 0000d000 08:06 139333     /usr/lib/jvm/java-8-openjdk-i386/jre/lib/i386/jli/libjli.so
+b7ecd000-b7ee6000 r-xp 00000000 08:06 263365     /lib/i386-linux-gnu/libz.so.1.2.8
+b7ee6000-b7ee7000 r-xp 00018000 08:06 263365     /lib/i386-linux-gnu/libz.so.1.2.8
+b7ee7000-b7ee8000 rwxp 00019000 08:06 263365     /lib/i386-linux-gnu/libz.so.1.2.8
+b7ee8000-b7f01000 r-xp 00000000 08:06 263323     /lib/i386-linux-gnu/libpthread-2.24.so
+b7f01000-b7f02000 r-xp 00018000 08:06 263323     /lib/i386-linux-gnu/libpthread-2.24.so
+b7f02000-b7f03000 rwxp 00019000 08:06 263323     /lib/i386-linux-gnu/libpthread-2.24.so
+b7f03000-b7f05000 rwxp 00000000 00:00 0 
+b7f08000-b7f13000 r-xp 00000000 08:06 263298     /lib/i386-linux-gnu/libnss_nis-2.24.so
+b7f13000-b7f14000 r-xp 0000a000 08:06 263298     /lib/i386-linux-gnu/libnss_nis-2.24.so
+b7f14000-b7f15000 rwxp 0000b000 08:06 263298     /lib/i386-linux-gnu/libnss_nis-2.24.so
+b7f15000-b7f1d000 r-xp 00000000 08:06 263283     /lib/i386-linux-gnu/libnss_compat-2.24.so
+b7f1d000-b7f1e000 r-xp 00007000 08:06 263283     /lib/i386-linux-gnu/libnss_compat-2.24.so
+b7f1e000-b7f1f000 rwxp 00008000 08:06 263283     /lib/i386-linux-gnu/libnss_compat-2.24.so
+b7f1f000-b7f20000 rwxp 00000000 00:00 0 
+b7f20000-b7f21000 r-xp 00000000 00:00 0 
+b7f21000-b7f2f000 r-xp 00000000 08:06 139368     /usr/lib/jvm/java-8-openjdk-i386/jre/lib/i386/libverify.so
+b7f2f000-b7f30000 ---p 0000e000 08:06 139368     /usr/lib/jvm/java-8-openjdk-i386/jre/lib/i386/libverify.so
+b7f30000-b7f31000 r-xp 0000e000 08:06 139368     /usr/lib/jvm/java-8-openjdk-i386/jre/lib/i386/libverify.so
+b7f31000-b7f32000 rwxp 0000f000 08:06 139368     /usr/lib/jvm/java-8-openjdk-i386/jre/lib/i386/libverify.so
+b7f32000-b7f35000 rwxp 00000000 00:00 0 
+b7f35000-b7f38000 r--p 00000000 00:00 0          [vvar]
+b7f38000-b7f3a000 r-xp 00000000 00:00 0          [vdso]
+b7f3a000-b7f5d000 r-xp 00000000 08:06 263168     /lib/i386-linux-gnu/ld-2.24.so
+b7f5d000-b7f5e000 r-xp 00022000 08:06 263168     /lib/i386-linux-gnu/ld-2.24.so
+b7f5e000-b7f5f000 rwxp 00023000 08:06 263168     /lib/i386-linux-gnu/ld-2.24.so
+bfb24000-bfb46000 rw-p 00000000 00:00 0          [stack]
+
+VM Arguments:
+jvm_args: -Djava.awt.headless=true -Xmx1024M -Dfile.encoding=UTF-8 -Duser.country=US -Duser.language=en -Duser.variant 
+java_command: com.android.dx.command.Main --dex --num-threads=4 --output /home/sharath/dev/react-native/android/app/build/intermediates/pre-dexed/debug/support-annotations-23.0.1_da1bfdb20934bfa834fd875df8f187131e7bddbb.jar /home/sharath/Android/Sdk/extras/android/m2repository/com/android/support/support-annotations/23.0.1/support-annotations-23.0.1.jar
+java_class_path (initial): /home/sharath/Android/Sdk/build-tools/23.0.1/lib/dx.jar
+Launcher Type: SUN_STANDARD
+
+Environment Variables:
+PATH=/home/sharath/.nvm/versions/node/v9.3.0/bin:/usr/local/bin:/usr/bin:/bin:/usr/local/games:/usr/games:/home/sharath/Android/Sdk/tools:/home/sharath/Android/Sdk/platform-tools:/home/sharath/Android/Sdk/tools:/home/sharath/Android/Sdk/platform-tools:/home/sharath/Android/Sdk/tools:/home/sharath/Android/Sdk/platform-tools
+USERNAME=sharath
+SHELL=/bin/bash
+DISPLAY=:1
+
+Signal Handlers:
+SIGSEGV: [libjvm.so+0x8fb2f0], sa_mask[0]=11111111011111111101111111111110, sa_flags=SA_RESTART|SA_SIGINFO
+SIGBUS: [libjvm.so+0x8fb2f0], sa_mask[0]=11111111011111111101111111111110, sa_flags=SA_RESTART|SA_SIGINFO
+SIGFPE: [libjvm.so+0x74dfc0], sa_mask[0]=11111111011111111101111111111110, sa_flags=SA_RESTART|SA_SIGINFO
+SIGPIPE: [libjvm.so+0x74dfc0], sa_mask[0]=11111111011111111101111111111110, sa_flags=SA_RESTART|SA_SIGINFO
+SIGXFSZ: [libjvm.so+0x74dfc0], sa_mask[0]=11111111011111111101111111111110, sa_flags=SA_RESTART|SA_SIGINFO
+SIGILL: [libjvm.so+0x74dfc0], sa_mask[0]=11111111011111111101111111111110, sa_flags=SA_RESTART|SA_SIGINFO
+SIGUSR1: SIG_DFL, sa_mask[0]=00000000000000000000000000000000, sa_flags=none
+SIGUSR2: [libjvm.so+0x74de00], sa_mask[0]=00100000000000000000000000000000, sa_flags=SA_RESTART|SA_SIGINFO
+SIGHUP: SIG_DFL, sa_mask[0]=00000000000000000000000000000000, sa_flags=none
+SIGINT: SIG_DFL, sa_mask[0]=00000000000000000000000000000000, sa_flags=none
+SIGTERM: SIG_DFL, sa_mask[0]=00000000000000000000000000000000, sa_flags=none
+SIGQUIT: SIG_DFL, sa_mask[0]=00000000000000000000000000000000, sa_flags=none
+
+
+---------------  S Y S T E M  ---------------
+
+OS:DISTRIB_ID=Kali
+DISTRIB_RELEASE=kali-rolling
+DISTRIB_CODENAME=kali-rolling
+DISTRIB_DESCRIPTION="Kali GNU/Linux Rolling"
+
+uname:Linux 4.13.0-kali1-686-pae #1 SMP Debian 4.13.10-1kali2 (2017-11-08) i686
+libc:glibc 2.24 NPTL 2.24 
+rlimit: STACK 8192k, CORE 0k, NPROC 15860, NOFILE 1048576, AS infinity
+load average:2.19 1.42 1.32
+
+/proc/meminfo:
+MemTotal:        2056720 kB
+MemFree:          114280 kB
+MemAvailable:       5780 kB
+Buffers:            1212 kB
+Cached:           420348 kB
+SwapCached:            0 kB
+Active:          1470964 kB
+Inactive:         386604 kB
+Active(anon):    1449644 kB
+Inactive(anon):   366564 kB
+Active(file):      21320 kB
+Inactive(file):    20040 kB
+Unevictable:           0 kB
+Mlocked:               0 kB
+HighTotal:       1175236 kB
+HighFree:          14984 kB
+LowTotal:         881484 kB
+LowFree:           99296 kB
+SwapTotal:             0 kB
+SwapFree:              0 kB
+Dirty:               176 kB
+Writeback:             0 kB
+AnonPages:       1436024 kB
+Mapped:            53300 kB
+Shmem:            380200 kB
+Slab:              42552 kB
+SReclaimable:      17580 kB
+SUnreclaim:        24972 kB
+KernelStack:        5408 kB
+PageTables:        18056 kB
+NFS_Unstable:          0 kB
+Bounce:                0 kB
+WritebackTmp:          0 kB
+CommitLimit:     1028360 kB
+Committed_AS:    6944372 kB
+VmallocTotal:     122880 kB
+VmallocUsed:           0 kB
+VmallocChunk:          0 kB
+HardwareCorrupted:     0 kB
+AnonHugePages:    438272 kB
+ShmemHugePages:        0 kB
+ShmemPmdMapped:        0 kB
+HugePages_Total:       0
+HugePages_Free:        0
+HugePages_Rsvd:        0
+HugePages_Surp:        0
+Hugepagesize:       2048 kB
+DirectMap4k:       34808 kB
+DirectMap2M:      876544 kB
+
+
+CPU:total 2 (initial active 2) (2 cores per cpu, 1 threads per core) family 6 model 15 stepping 2, cmov, cx8, fxsr, mmx, sse, sse2, sse3, ssse3, tsc
+
+/proc/cpuinfo:
+processor	: 0
+vendor_id	: GenuineIntel
+cpu family	: 6
+model		: 15
+model name	: Intel(R) Core(TM)2 CPU          4400  @ 2.00GHz
+stepping	: 2
+microcode	: 0x5d
+cpu MHz		: 1995.148
+cache size	: 2048 KB
+physical id	: 0
+siblings	: 2
+core id		: 0
+cpu cores	: 2
+apicid		: 0
+initial apicid	: 0
+fdiv_bug	: no
+f00f_bug	: no
+coma_bug	: no
+fpu		: yes
+fpu_exception	: yes
+cpuid level	: 10
+wp		: yes
+flags		: fpu vme de pse tsc msr pae mce cx8 apic sep mtrr pge mca cmov pat pse36 clflush dts acpi mmx fxsr sse sse2 ss ht tm pbe nx lm constant_tsc arch_perfmon pebs bts cpuid aperfmperf pni dtes64 monitor ds_cpl est tm2 ssse3 cx16 xtpr pdcm lahf_lm dtherm
+bugs		:
+bogomips	: 3990.29
+clflush size	: 64
+cache_alignment	: 64
+address sizes	: 36 bits physical, 48 bits virtual
+power management:
+
+processor	: 1
+vendor_id	: GenuineIntel
+cpu family	: 6
+model		: 15
+model name	: Intel(R) Core(TM)2 CPU          4400  @ 2.00GHz
+stepping	: 2
+microcode	: 0x5d
+cpu MHz		: 1995.148
+cache size	: 2048 KB
+physical id	: 0
+siblings	: 2
+core id		: 1
+cpu cores	: 2
+apicid		: 1
+initial apicid	: 1
+fdiv_bug	: no
+f00f_bug	: no
+coma_bug	: no
+fpu		: yes
+fpu_exception	: yes
+cpuid level	: 10
+wp		: yes
+flags		: fpu vme de pse tsc msr pae mce cx8 apic sep mtrr pge mca cmov pat pse36 clflush dts acpi mmx fxsr sse sse2 ss ht tm pbe nx lm constant_tsc arch_perfmon pebs bts cpuid aperfmperf pni dtes64 monitor ds_cpl est tm2 ssse3 cx16 xtpr pdcm lahf_lm dtherm
+bugs		:
+bogomips	: 3990.00
+clflush size	: 64
+cache_alignment	: 64
+address sizes	: 36 bits physical, 48 bits virtual
+power management:
+
+
+
+Memory: 4k page, physical 2056720k(114280k free), swap 0k(0k free)
+
+vm_info: OpenJDK Server VM (25.151-b12) for linux-x86 JRE (1.8.0_151-8u151-b12-1-b12), built on Nov  1 2017 06:12:56 by "buildd" with gcc 7.2.1 20171025
+
+time: Sun Jan 14 11:12:43 2018
+elapsed time: 0 seconds (0d 0h 0m 0s)
+
