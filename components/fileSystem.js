@@ -51,7 +51,14 @@ export class FileSystem extends Component {
             if(isAlreadySelected>=0){
                 let _source = _.clone(this.props.source);
                 _source.splice(isAlreadySelected,1);
-                this.props.setPropsToState({source:_source});    
+                this.props.setPropsToState({source:_source},
+                    ()=>{
+                        if(_.isEmpty(this.props.source)){
+                            this.props.setPropsToState({
+                                selectedOption:''
+                            });
+                        }
+                    });    
             }else{
                 let _source = _.clone(this.props.source);
                 _source.push(selected.path)
@@ -134,7 +141,7 @@ export class FileSystem extends Component {
                     (fileSystem) => {
                         return <FlatList
                             data={fileSystem}
-                            extraData={this.props.pathStack}
+                            // extraData={this.props.pathStack}
                             keyExtractor={this._keyExtractor}
                             renderItem={this._renderItem}
                         />

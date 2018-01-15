@@ -22,10 +22,12 @@ import {
   Image,
   Alert,
   ToastAndroid,
-  Dimensions
+  Dimensions,
 } from 'react-native';
 import FileSystem from './components/fileSystem'
+import ConfirmAction from './components/confirmAction'
 import { validStyles } from './validstyleprops'
+import Prompt from './components/prompt';
 const instructions = Platform.select({
   ios: 'Press Cmd+R to reload,\n' +
     'Cmd+D or shake for dev menu',
@@ -41,9 +43,27 @@ export default class App extends Component {
       source: [],
       destination: [],
       isMenuClicked: false,
-      selectedOption: ''
+      selectedOption: '',
+      isActionConfirmed: false,
+      newFolder: [],
+      isPromptVisible: false
     }
   }
+  onPromptCancel = () => {
+    this.setState({ isPromptVisible: false })
+  }
+  onPromptSubmit = (value) => {
+    console.log('value',value)
+    this.setState({ isPromptVisible: false, newFolder: value },
+      () => {
+        if (_.isEmpty(this.state.newFolder)) {
+          ToastAndroid.show(`No folder(s) name(s) entered`, ToastAndroid.SHORT);
+          return;
+        }
+      });
+  }
+  promptTitle = 'New Folder'
+  promptPlaceHolder = 'foldername (or) folder1 name,folder2 name,...'
   _toolbarActions = () => [
     { title: 'menu', icon: require('./res/toolbar/menu.png'), show: 'always' }
   ];
@@ -58,43 +78,107 @@ export default class App extends Component {
     source: this.state.source,
     destination: this.state.destination,
     selectedOption: this.state.selectedOption,
-    pathStack:this.state.pathStack
+    pathStack: this.state.pathStack
+  });
+  promptProps = () => ({
+    title: this.promptTitle,
+    placeholder: this.promptPlaceHolder,
+    visible: this.state.isPromptVisible,
+    onCancel: this.onPromptCancel,
+    onSubmit: this.onPromptSubmit
   })
-  longPressData = {
-    data: ['copy', 'delete', 'move'],
+  actions = () => {
+    switch (this.state.selectedOption) {
+      case 'copy': return this.copy
+      case 'move': return this.move
+      case 'delete': return this.delete;
+      case '': return this.initialState
+    }
+  }
+  initialState = () => {
+    this.setState({
+      pathStack: [RNFS.ExternalStorageDirectoryPath],
+      source: [],
+      destination: [],
+      isMenuClicked: false,
+      selectedOption: '',
+      isActionConfirmed: false
+    })
+  }
+  confirmActionProps = () => ({
+    setPropsToState: this.setPropsToState,
+    selectedOption: this.state.selectedOption,
+    action: this.actions()
+  })
+  menuDataList = () => {
+    if (!_.isEmpty(this.state.source) && this.state.selectedOption && this.state.selectedOption !== 'delete') {
+      return [`${this.state.selectedOption} here`]
+    } else if (!_.isEmpty(this.state.source)) {
+      return ['copy', 'move', 'delete', 'properties']
+    } else {
+      return ['new folder', 'properties']
+    }
+  }
+  menuData = {
+    data: this.menuDataList.bind(this),
     style: styles,
     onPress: (option) => this.onOptionSelected(option)
   }
   back = () => {
     let _pathStack = this.state.pathStack
     if (_pathStack.length !== 1) {
-        _pathStack.pop();
+      _pathStack.pop();
     }
     this.setState({
-        pathStack: _pathStack
+      pathStack: _pathStack
     })
 
-}
+  }
   onOptionSelected = (option) => {
-    this.setState({ selectedOption: option });
+    this.setState({ selectedOption: option, isMenuClicked: false });
     switch (option) {
       case 'delete': {
         this.delete();
       }
-      case 'copy':{
-        this.copy();
-      }
-      case 'move':{
-        this.move();
+      case 'new folder': {
+        this.createNewFolder();
       }
     }
   }
-  copy = () => {
-    if(this.state.source.length===0){
-      ToastAndroid.show(`No file(s)/folder(s) selected`, ToastAndroid.SHORT);
-      return ;
+  createNewFolder = () => {
+    this.setState({ isPromptVisible: true });
+    console.log('pp->', this.state);
+    if (!_.isEmpty(this.state.source)) {
+      _.each(this.state.source, (path) => {
+        _.each(this.state.newFolder, (name) => {
+          RNFS.mkdir(path + '/' + name)
+            .then((dir) => {
+              ToastAndroid.show(`new folder ${name} created at ${path}/`, ToastAndroid.SHORT);
+            })
+            .catch((dir) => {
+              ToastAndroid.show(`failed to create new folder ${name} at ${path}/`, ToastAndroid.SHORT);
+            })
+        })
+      })
+    } else {
+      _.each(this.state.newFolder, (name) => {
+        RNFS.mkdir(_.last(this.state.pathStack) + '/' + name)
+          .then((dir) => {
+            ToastAndroid.show(`new folder ${name} created at ${path}/`, ToastAndroid.SHORT);
+          })
+          .catch((dir) => {
+            ToastAndroid.show(`failed to create new folder ${name} at ${path}/`, ToastAndroid.SHORT);
+          })
+      })
     }
-    let copyCount=0;
+    this.setState({ source: [], destination: [], selectedOption: '', newFolder: [] });
+  }
+  copy = () => {
+    if (this.state.source.length === 0) {
+      ToastAndroid.show(`No file(s)/folder(s) selected`, ToastAndroid.SHORT);
+      return;
+    }
+    let copyCount = 0;
     _.each(this.state.source, (source) => {
       _.each(this.state.destination, (destination) => {
         RNFS.copyFile(source, destination + '/' + _.last(source.split('/')))
@@ -108,14 +192,14 @@ export default class App extends Component {
       });
     });
     ToastAndroid.show(`total ${copyCount} file(s)/folder(s) copied out of ${this.state.source.length}`, ToastAndroid.SHORT);
-    this.setState({ source: [], destination: [] });
+    this.setState({ source: [], destination: [], selectedOption: '' });
   }
   move = () => {
-    if(this.state.source.length===0){
+    if (this.state.source.length === 0) {
       ToastAndroid.show(`No file(s)/folder(s) selected`, ToastAndroid.SHORT);
-      return ;
+      return;
     }
-    let moveCount=0;
+    let moveCount = 0;
     _.each(this.state.source, (source) => {
       _.each(this.state.destination, (destination) => {
         RNFS.moveFile(source, destination + '/' + _.last(source.split('/')))
@@ -129,12 +213,12 @@ export default class App extends Component {
       });
     });
     ToastAndroid.show(`total ${moveCount} file(s)/folder(s) moved out of ${this.state.source.length}`, ToastAndroid.SHORT);
-    this.setState({ source: [], destination: [] });
+    this.setState({ source: [], destination: [], selectedOption: '' });
   }
   delete = () => {
-    if(this.state.source.length===0){
+    if (this.state.source.length === 0) {
       ToastAndroid.show(`No file(s)/folder(s) selected`, ToastAndroid.SHORT);
-      return ;
+      return;
     }
     let deletedCount = 0;
     _.each(this.state.source, (source) => {
@@ -148,13 +232,13 @@ export default class App extends Component {
         })
     });
     ToastAndroid.show(`total ${deletedCount} file(s)/folder(s) deleted`, ToastAndroid.SHORT);
-    this.setState({ source: [] });
+    this.setState({ source: [], destination: [], selectedOption: '' });
   }
   modalVisibilityHandler = () => {
     this.setState({ isModalVisible: !this.state.isModalVisible })
   }
-  setPropsToState = (props) => {
-    this.setState(props);
+  setPropsToState = (props, callback) => {
+    this.setState(props, callback && callback());
   }
   render() {
     return (
@@ -170,11 +254,25 @@ export default class App extends Component {
         </View>
         <View>
           {
-            this.state.isMenuClicked === true && <ListMenu  {...this.longPressData} />
+            this.state.isMenuClicked === true && <ListMenu  {...this.menuData} />
           }
         </View>
-        <View style={{overflow:'visible',height:Dimensions.get('window').height-70}}>
-          <FileSystem {...this.fileSystemProps()} />
+        <View style={
+          this.state.selectedOption !== '' && !_.isEmpty(this.state.destination) ?
+            styles.fileSystemAfterOption :
+            styles.fileSystemBeforeOption
+        }>
+          <FileSystem {...this.fileSystemProps() } />
+        </View>
+        <View style={styles.confirmAction}>
+          {
+            this.state.selectedOption !== '' && !_.isEmpty(this.state.destination) && <ConfirmAction {...this.confirmActionProps() } />
+          }
+        </View>
+        <View>
+          {
+            this.state.isPromptVisible && <Prompt {...this.promptProps() } />
+          }
         </View>
       </View >
     );
@@ -259,13 +357,26 @@ const styles = StyleSheet.create({
     color: '#ffffff',
     fontWeight: 'bold'
   },
-  menuList:{
-    position:'absolute',
-    right:20,
-    top:-10,
-    width:100,
-    backgroundColor:'#ffffff',
-    zIndex:1
+  menuList: {
+    position: 'absolute',
+    right: 20,
+    top: -10,
+    width: 100,
+    backgroundColor: '#ffffff',
+    zIndex: 1
+  },
+  fileSystemBeforeOption: {
+    overflow: 'visible', height: Dimensions.get('window').height - 70
+  },
+  fileSystemAfterOption: {
+    overflow: 'visible', height: Dimensions.get('window').height - 100
+  },
+  confirmAction: {
+    // height: 100,
+    // position:'absolute',
+    // bottom:0,
+    width: '100%',
+    zIndex: 2
   }
 
 });
