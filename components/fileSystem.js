@@ -11,15 +11,15 @@ export class FileSystem extends Component {
             pathStack: this.props.pathStack,
         }
     }
-    componentDidMount(){
+    componentDidMount() {
         BackHandler.addEventListener('hardwareBackPress', () => {
-             this.back();
+            this.back();
         })
     }
-    componentWillUnmount(){
+    componentWillUnmount() {
         BackHandler.removeEventListener('hardwareBackPress', () => {
             this.back();
-            
+
         })
     }
     back = () => {
@@ -29,14 +29,14 @@ export class FileSystem extends Component {
         }
         return this.setState({
             pathStack: _pathStack
-        },()=>{
+        }, () => {
             if (this.state.pathStack.length === 1) {
                 return true
             } else {
                 return false;
             }
         })
-    
+
     }
     onPress = (selected) => {
         if (selected.isDirectory()) {
@@ -46,37 +46,37 @@ export class FileSystem extends Component {
         }
     }
     onLongPress = (selected) => {
-        if(!this.props.selectedOption){
+        if (!this.props.selectedOption) {
             let isAlreadySelected = this.props.source.indexOf(selected.path);
-            if(isAlreadySelected>=0){
+            if (isAlreadySelected >= 0) {
                 let _source = _.clone(this.props.source);
-                _source.splice(isAlreadySelected,1);
-                this.props.setPropsToState({source:_source},
-                    ()=>{
-                        if(_.isEmpty(this.props.source)){
+                _source.splice(isAlreadySelected, 1);
+                this.props.setPropsToState({ source: _source },
+                    () => {
+                        if (_.isEmpty(this.props.source)) {
                             this.props.setPropsToState({
-                                selectedOption:''
+                                selectedOption: ''
                             });
                         }
-                    });    
-            }else{
+                    });
+            } else {
                 let _source = _.clone(this.props.source);
                 _source.push(selected.path)
-                this.props.setPropsToState({source:_source});
+                this.props.setPropsToState({ source: _source });
             }
-        }else{
+        } else {
             let isAlreadySelected = this.props.destination.indexOf(selected.path);
-            if(isAlreadySelected>=0){
+            if (isAlreadySelected >= 0) {
                 let _destination = _.clone(this.props.destination);
-                _destination.splice(isAlreadySelected,1);
-                this.props.setPropsToState({destination:_destination});    
-            }else{
+                _destination.splice(isAlreadySelected, 1);
+                this.props.setPropsToState({ destination: _destination });
+            } else {
                 let _destination = _.clone(this.props.destination);
                 _destination.push(selected.path)
-                this.props.setPropsToState({destination:_destination});
+                this.props.setPropsToState({ destination: _destination });
             }
         }
-        
+
     }
     getFileSystem = () => {
         return RNFS.readDir(_.last(this.state.pathStack))
@@ -84,24 +84,24 @@ export class FileSystem extends Component {
                 return Promise.all(result);
             });
     }
-    getStyle=(item)=>{
-        if(this.props.destination.indexOf(item.path)>=0){
-            if(item.isDirectory()){
-                return [styles.listItem,styles.destinationDirectorySelected]
-            }else{
-                return [styles.listItem,styles.destinationFileSelected]
+    getStyle = (item) => {
+        if (this.props.destination.indexOf(item.path) >= 0) {
+            if (item.isDirectory()) {
+                return [styles.listItem, styles.destinationDirectorySelected]
+            } else {
+                return [styles.listItem, styles.destinationFileSelected]
             }
-        }else if(this.props.source.indexOf(item.path)>=0){
-            if(item.isDirectory()){
-                return [styles.listItem,styles.sourceDirectorySelected]
-            }else{
-                return [styles.listItem,styles.sourceFileSelected]
+        } else if (this.props.source.indexOf(item.path) >= 0) {
+            if (item.isDirectory()) {
+                return [styles.listItem, styles.sourceDirectorySelected]
+            } else {
+                return [styles.listItem, styles.sourceFileSelected]
             }
-        }else{
-            if(item.isDirectory()){
-                return [styles.listItem,styles.directory]
-            }else{
-                return [styles.listItem,styles.file]
+        } else {
+            if (item.isDirectory()) {
+                return [styles.listItem, styles.directory]
+            } else {
+                return [styles.listItem, styles.file]
             }
         }
     }
@@ -112,21 +112,21 @@ export class FileSystem extends Component {
                 item.isDirectory()
                     ?
                     <View style={this.getStyle(item)}>
-                    <View style={styles.dirImage}>
-                        <Image
-                            style={styles.dirImage}
-                            source={require('../res/inAppImages/folder.png')}
-                        />
+                        <View style={styles.dirImage}>
+                            <Image
+                                style={styles.dirImage}
+                                source={require('../res/inAppImages/folder.png')}
+                            />
                         </View>
                         <Text style={[styles.directoryText]}>{_.last(item.path.split('/')) + '/'}</Text>
                     </View>
                     :
                     <View style={this.getStyle(item)}>
-                    <View style={styles.fileImage}>
-                        <Image
-                            style={styles.fileImage}
-                            source={require('../res/inAppImages/file.png')}
-                        />
+                        <View style={styles.fileImage}>
+                            <Image
+                                style={styles.fileImage}
+                                source={require('../res/inAppImages/file.png')}
+                            />
                         </View>
                         <Text style={[styles.fileText]}>{_.last(item.path.split('/'))}</Text>
                     </View>
