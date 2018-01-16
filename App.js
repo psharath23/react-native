@@ -53,9 +53,14 @@ export default class App extends Component {
     this.setState({ isPromptVisible: false })
   }
   onPromptSubmit = (value) => {
-    console.log('value',value)
-    this.setState({ isPromptVisible: false, newFolder: value },
+    console.log('value', value)
+    if (!value) {
+      ToastAndroid.show(`No folder(s) name(s) entered`, ToastAndroid.SHORT);
+      return;
+    }
+    this.setState({ isPromptVisible: false, newFolder: value.split(',') },
       () => {
+        console.log('statenewfolder', this.state.newFolder)
         if (_.isEmpty(this.state.newFolder)) {
           ToastAndroid.show(`No folder(s) name(s) entered`, ToastAndroid.SHORT);
           return;

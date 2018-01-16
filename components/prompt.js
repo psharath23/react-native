@@ -3,15 +3,12 @@ import { TouchableOpacity, FlatList, BackHandler, View, Text, StyleSheet, Image,
 export class Prompt extends Component {
     constructor(props) {
         super(props);
-        this.state={
-            promptValue:''
+        this.state = {
+            promptValue: ''
         }
     }
-    onChange=(e)=>{
-        this.setState({promptValue:e.text})
-        console.log('onChnage',e)
-    }
     render() {
+        console.log('change', this.state.promptValue);
         return (
             <Modal
                 visible={this.props.visible}
@@ -21,7 +18,7 @@ export class Prompt extends Component {
                     <Text style={styles.modalTitle}>{this.props.title}</Text>
                     <TextInput
                         placeholder={this.props.placeholder}
-                        onChange={(e)=>this.onChange(e)}
+                        onChangeText={(text) => this.setState({ promptValue: text })}
                         value={this.state.promptValue}
                     />
                     <View style={styles.button}>
@@ -29,7 +26,7 @@ export class Prompt extends Component {
                             <Button
                                 title='submit'
                                 color='#4a9b3e'
-                                onPress={()=>this.props.onSubmit(this.state.promptValue)}
+                                onPress={() => this.props.onSubmit(this.state.promptValue)}
                             />
                         </View>
                         <View style={styles.cancelButton}>
@@ -47,8 +44,8 @@ export class Prompt extends Component {
 }
 const styles = StyleSheet.create({
     modal: {
-        borderRadius:20,
-        padding:20,
+        borderRadius: 20,
+        padding: 20,
         backgroundColor: '#ffffff',
         height: Dimensions.get('window').height - 400,
         width: Dimensions.get('window').width - 100,
@@ -74,8 +71,8 @@ const styles = StyleSheet.create({
         flexDirection: 'row',
         backgroundColor: '#a9c1e8'
     },
-    modalTitle:{
-        color:'#020202'
+    modalTitle: {
+        color: '#020202'
     }
 })
 export default Prompt
