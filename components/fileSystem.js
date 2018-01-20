@@ -13,29 +13,35 @@ export class FileSystem extends Component {
     }
     componentDidMount() {
         BackHandler.addEventListener('hardwareBackPress', () => {
-            this.back();
+            return this.back();
         })
+        console.log('did mount')
     }
     componentWillUnmount() {
+        console.log('un mount')
         BackHandler.removeEventListener('hardwareBackPress', () => {
-            this.back();
+            return this.back();
 
         })
     }
+    // shouldComponentUpdate(nextProps) {
+    //     if (this.props === nextProps) {
+    //         return false;
+    //     }else{
+    //         return true;
+    //     }
+    // }
     back = () => {
         let _pathStack = this.state.pathStack
         if (_pathStack.length !== 1) {
             _pathStack.pop();
+            this.setState({
+                pathStack: _pathStack
+            });
+            return true;
+        } else {
+            return false;
         }
-        return this.setState({
-            pathStack: _pathStack
-        }, () => {
-            if (this.state.pathStack.length === 1) {
-                return true
-            } else {
-                return false;
-            }
-        })
 
     }
     onPress = (selected) => {

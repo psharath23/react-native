@@ -29,6 +29,7 @@ import {
 import FileSystem from './components/fileSystem'
 import ConfirmAction from './components/confirmAction'
 import { validStyles } from './validstyleprops'
+import CustomActivityIndicator from './components/customActivityIndicator'
 import Prompt from './components/prompt';
 const instructions = Platform.select({
   ios: 'Press Cmd+R to reload,\n' +
@@ -49,7 +50,8 @@ export default class App extends Component {
       isActionConfirmed: false,
       newFolder: [],
       isPromptVisible: false,
-      isTaskRunning: false
+      isRenameClicked: false,
+      inTask: false
     }
   }
   onPromptCancel = () => {
@@ -114,7 +116,8 @@ export default class App extends Component {
       destination: [],
       isMenuClicked: false,
       selectedOption: '',
-      isActionConfirmed: false
+      isActionConfirmed: false,
+      inTask: false
     })
   }
   confirmActionProps = () => ({
@@ -127,6 +130,8 @@ export default class App extends Component {
       return [`${this.state.selectedOption} here`]
     } else if (!_.isEmpty(this.state.source)) {
       return ['copy', 'move', 'delete', 'properties']
+    } else if (this.state.source.length === 1) {
+      return ['copy', 'move', 'delete', 'properties', 'rename']
     } else {
       return ['new folder', 'properties']
     }
@@ -160,6 +165,8 @@ export default class App extends Component {
       case 'properties': {
         break;
       }
+      case 'rename': this.setState({ isRenameClicked: true });
+        this.rename();
       case 'move here':
       case 'copy here': {
         let _destination = this.state.destination;
@@ -168,8 +175,22 @@ export default class App extends Component {
       }
     }
   }
+  rename = () => {
+    _.each(this.state.source, (source) => {
+      RNFS.moveFile(source, _.last(source.split('/')))
+        .then((move) => {
+          ToastAndroid.show(`${_.last(source.split('/'))} moved to ${destination}`, ToastAndroid.SHORT);
+          moveCount++;
+          Promise.resolve();
+        })
+        .catch((err) => {
+          ToastAndroid.show(`failed to move ${_.last(source.split('/'))} to ${destination}`, ToastAndroid.SHORT);
+        })
+    })
+  }
   createNewFolder = () => {
     if (!_.isEmpty(this.state.source)) {
+      this.setState({ inTask: true })
       _.each(this.state.source, (path) => {
         _.each(this.state.newFolder, (name) => {
           RNFS.mkdir(path + '/' + name)
@@ -194,7 +215,7 @@ export default class App extends Component {
           })
       })
     }
-    this.setState({ source: [], destination: [], selectedOption: '', newFolder: [] });
+    this.setState({ source: [], destination: [], selectedOption: '', newFolder: [], inTask: false });
   }
   copy = () => {
     this.setState({ isTaskRunning: true })
@@ -203,6 +224,7 @@ export default class App extends Component {
       this.setState({ isTaskRunning: false })
       return;
     }
+    this.setState({ inTask: true })
     let copyCount = 0;
     _.each(this.state.source, (source) => {
       _.each(this.state.destination, (destination) => {
@@ -218,13 +240,14 @@ export default class App extends Component {
       });
     });
     ToastAndroid.show(`total ${copyCount} file(s)/folder(s) copied out of ${this.state.source.length}`, ToastAndroid.SHORT);
-    this.setState({ source: [], destination: [], selectedOption: '', isTaskRunning: false });
+    this.setState({ source: [], destination: [], selectedOption: '', inTask: false });
   }
   move = () => {
     if (this.state.source.length === 0) {
       ToastAndroid.show(`No file(s)/folder(s) selected`, ToastAndroid.SHORT);
       return;
     }
+    this.setState({ inTask: true })
     let moveCount = 0;
     _.each(this.state.source, (source) => {
       _.each(this.state.destination, (destination) => {
@@ -240,13 +263,14 @@ export default class App extends Component {
       });
     });
     ToastAndroid.show(`total ${moveCount} file(s)/folder(s) moved out of ${this.state.source.length}`, ToastAndroid.SHORT);
-    this.setState({ source: [], destination: [], selectedOption: '' });
+    this.setState({ source: [], destination: [], selectedOption: '', inTask: false });
   }
   delete = () => {
     if (this.state.source.length === 0) {
       ToastAndroid.show(`No file(s)/folder(s) selected`, ToastAndroid.SHORT);
       return;
     }
+    this.setState({ inTask: true })
     let deletedCount = 0;
     _.each(this.state.source, (source) => {
       RNFS.unlink(source)
@@ -259,7 +283,7 @@ export default class App extends Component {
         })
     });
     ToastAndroid.show(`total ${deletedCount} file(s)/folder(s) deleted`, ToastAndroid.SHORT);
-    this.setState({ source: [], destination: [], selectedOption: '' });
+    this.setState({ source: [], destination: [], selectedOption: '', inTask: false });
   }
   modalVisibilityHandler = () => {
     this.setState({ isModalVisible: !this.state.isModalVisible })
@@ -301,17 +325,8 @@ export default class App extends Component {
             this.state.isPromptVisible && <Prompt {...this.promptProps() } />
           }
         </View>
-        <View style={{ alignItems: 'center', justifyContent: 'center', flex: 1, backgroundColor: 'white' }}>
-          <ActivityIndicator
-            animating={true}
-            style={
-              {
-                alignItems: 'center',
-                justifyContent: 'center',
-                opacity: true ? 1 : 0
-              }}
-            size="large"
-          />
+        <View >
+          {this.state.inTask && <CustomActivityIndicator isVisible={this.state.inTask} />}
         </View>
       </View >
     );

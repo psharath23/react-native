@@ -1,5 +1,5 @@
 import React, { Component } from 'react';
-import { TouchableOpacity, FlatList, BackHandler, View, Text, StyleSheet, Image, Alert, Button,Dimensions } from 'react-native'
+import { TouchableOpacity, FlatList, BackHandler, View, Text, StyleSheet, Image, Alert, Button, Dimensions } from 'react-native'
 import Async from 'react-promise'
 import _ from 'lodash'
 import * as RNFS from 'react-native-fs';
@@ -14,31 +14,32 @@ export class ConfirmAction extends Component {
             destination: [],
             source: [],
             isActionConfirmed: false
-        },()=>{
+        }, () => {
             this.props.action();
         });
     }
     confirmAction = () => {
         this.props.setPropsToState({
             isActionConfirmed: true
-        },()=>{
+        }, () => {
             this.props.action();
         });
     }
+
     render() {
         return (
             <View style={styles.actionBar}>
                 <View style={styles.cancelButton}>
                     <Button
-                    title='cancel'
-                    color='#f44242'
+                        title='cancel'
+                        color='#f44242'
                         onPress={this.cancelAction.bind(this)}
                     />
                 </View>
                 <View style={styles.confirmButton}>
                     <Button
-                    title='confirm'
-                    color='#4a9b3e'
+                        title='confirm'
+                        color='#4a9b3e'
                         onPress={this.confirmAction.bind(this)}
                     />
                 </View>
@@ -48,11 +49,11 @@ export class ConfirmAction extends Component {
 }
 const styles = StyleSheet.create({
     cancelButton: {
-        width:'50%',
+        width: '50%',
         backgroundColor: '#f44242',
     },
     confirmButton: {
-        width:'50%',
+        width: '50%',
         backgroundColor: '#4a9b3e',
     },
     cancelButtonText: {
@@ -62,7 +63,7 @@ const styles = StyleSheet.create({
         color: '#ffffff',
     },
     actionBar: {
-        flexDirection:'row',
+        flexDirection: 'row',
         backgroundColor: '#a9c1e8'
     }
 });
