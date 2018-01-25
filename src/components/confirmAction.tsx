@@ -1,10 +1,6 @@
 import React, { Component } from 'react';
-import { TouchableOpacity, FlatList, BackHandler, View, Text, StyleSheet, Image, Alert, Button, Dimensions } from 'react-native'
-import Async from 'react-promise'
-import _ from 'lodash'
-import * as RNFS from 'react-native-fs';
-import ListMenu from '../components/listMenu'
-export class ConfirmAction extends Component {
+import { View, StyleSheet, Button } from 'react-native'
+export class ConfirmAction extends Component<any, any> {
     constructor(props) {
         super(props);
     }

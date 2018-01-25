@@ -1,6 +1,6 @@
 import React, { Component } from 'react';
-import { TouchableOpacity, FlatList, BackHandler, View, Text, StyleSheet, Image, Alert, Button, Dimensions, Modal, TextInput } from 'react-native'
-export class Prompt extends Component {
+import { View, Text, StyleSheet, Button, Dimensions, Modal, TextInput } from 'react-native'
+export class Prompt extends Component<any, any> {
     constructor(props) {
         super(props);
         this.state = {

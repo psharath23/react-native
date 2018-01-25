@@ -1,10 +1,9 @@
 import React, { Component } from 'react';
-import { TouchableOpacity, FlatList, BackHandler, View, Text, StyleSheet, Image, Alert, BackAndroid } from 'react-native'
+import { TouchableOpacity, FlatList, BackHandler, View, Text, StyleSheet, Image } from 'react-native'
 import Async from 'react-promise'
 import _ from 'lodash'
 import * as RNFS from 'react-native-fs';
-import ListMenu from '../components/listMenu'
-export class FileSystem extends Component {
+export class FileSystem extends Component<any, any> {
     constructor(props) {
         super(props);
         this.state = {
@@ -24,13 +23,6 @@ export class FileSystem extends Component {
 
         })
     }
-    // shouldComponentUpdate(nextProps) {
-    //     if (this.props === nextProps) {
-    //         return false;
-    //     }else{
-    //         return true;
-    //     }
-    // }
     back = () => {
         let _pathStack = this.state.pathStack
         if (_pathStack.length !== 1) {
@@ -111,7 +103,7 @@ export class FileSystem extends Component {
             }
         }
     }
-    _keyExtractor = (item, index) => item.path;
+    _keyExtractor = (item) => item.name;
     _renderItem = ({ item }) => (
         <TouchableOpacity onLongPress={this.onLongPress.bind(this, item)} onPress={this.onPress.bind(this, item)}>
             {
@@ -147,7 +139,7 @@ export class FileSystem extends Component {
                     (fileSystem) => {
                         return <FlatList
                             data={fileSystem}
-                            // extraData={this.props.pathStack}
+                            extraData={this.state.pathStack}
                             keyExtractor={this._keyExtractor}
                             renderItem={this._renderItem}
                         />

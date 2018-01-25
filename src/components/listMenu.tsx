@@ -1,6 +1,6 @@
 import React, { Component } from 'react';
 import { TouchableOpacity, FlatList, Text } from 'react-native'
-export class ListMenu extends Component {
+export class ListMenu extends Component<any, any> {
     constructor(props) {
         super(props);
     }
@@ -13,7 +13,7 @@ export class ListMenu extends Component {
                 renderItem={
                     ({ item }) =>
                         <TouchableOpacity onPress={this.props.onPress.bind(this, item)}>
-                            <Text style={[this.props.style.listItem,{textAlign:'center'}]}>{item}</Text>
+                            <Text style={[this.props.style.listItem, { textAlign: 'center' }]}>{item}</Text>
                         </TouchableOpacity>
                 }
             />

@@ -1,6 +1,6 @@
 import React, { Component } from 'react';
-import { TouchableOpacity, FlatList, BackHandler, View, Text, StyleSheet, Image, Modal, Button, Dimensions } from 'react-native'
-export class CustomActivityIndicator extends Component {
+import { View, StyleSheet, Image, Modal, Dimensions } from 'react-native'
+export class CustomActivityIndicator extends Component<any, any> {
     constructor(props) {
         super(props);
         this.state = {
