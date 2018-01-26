@@ -5,6 +5,7 @@
   "scripts": {
     "tsc": "tsc",
     "clean": "rimraf artifacts",
+    "lint": "tslint src/**/*.ts",
     "build": "npm run clean && npm run tsc --",
     "start": "node node_modules/react-native/local-cli/cli.js start",
     "test": "jest"
@@ -16,6 +17,9 @@
     "react-native": "0.51.0",
     "react-native-fs": "^2.9.6",
     "react-promise": "^2.0.0",
+    "react-redux": "^5.0.6",
+    "redux": "^3.7.2",
+    "tslint": "^5.9.1",
     "typescript": "^2.6.2"
   },
   "devDependencies": {

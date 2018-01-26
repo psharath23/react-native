@@ -1,5 +1,6 @@
 import React, { Component } from 'react';
 import { View, Text, StyleSheet, Button, Dimensions, Modal, TextInput } from 'react-native';
+import { connect } from 'react-redux';
 export class Prompt extends Component {
     constructor(props) {
         super(props);
@@ -29,21 +30,21 @@ const styles = StyleSheet.create({
         width: Dimensions.get('window').width - 100,
         position: 'absolute',
         top: Dimensions.get('window').height - 450,
-        left: Dimensions.get('window').width - 310,
+        left: Dimensions.get('window').width - 310
     },
     cancelButton: {
         width: '50%',
-        backgroundColor: '#f44242',
+        backgroundColor: '#f44242'
     },
     confirmButton: {
         width: '50%',
-        backgroundColor: '#4a9b3e',
+        backgroundColor: '#4a9b3e'
     },
     cancelButtonText: {
-        color: '#ffffff',
+        color: '#ffffff'
     },
     confirmButtonText: {
-        color: '#ffffff',
+        color: '#ffffff'
     },
     button: {
         flexDirection: 'row',
@@ -53,5 +54,14 @@ const styles = StyleSheet.create({
         color: '#020202'
     }
 });
-export default Prompt;
+function mapStateToProps(state) {
+    return {
+        App: state.App,
+        FileManager: state.FileManager
+    };
+}
+function mapDispatchToProps(dispatch) {
+    return { Dispatch: dispatch };
+}
+export default connect(mapStateToProps, mapDispatchToProps)(ListMenu);
 //# sourceMappingURL=prompt.js.map

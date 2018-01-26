@@ -13,7 +13,8 @@
         "sourceMap": true,
         "noImplicitReturns": false,
         "noUnusedParameters": true,
-        "noUnusedLocals": true
+        "noUnusedLocals": true,
+        "watch":true,
     },
     "filesGlob": [
         "typings/index.d.ts",
@@ -31,5 +32,6 @@
         "build",
         "node_modules"
     ],
-    "compileOnSave": false
+    "compileOnSave": true,
+    "watch":true
 }

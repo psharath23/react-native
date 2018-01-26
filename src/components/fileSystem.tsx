@@ -1,95 +1,77 @@
-import React, { Component } from 'react';
+import React, { Component } from 'react'
 import { TouchableOpacity, FlatList, BackHandler, View, Text, StyleSheet, Image } from 'react-native'
 import Async from 'react-promise'
 import _ from 'lodash'
-import * as RNFS from 'react-native-fs';
-export class FileSystem extends Component<any, any> {
+import * as RNFS from 'react-native-fs'
+import { IReducer, FileSystemProps } from '../interfaces/index'
+import { connect } from 'react-redux'
+import FileManagerActions from '../actions/filemanager.action'
+export class FileSystem extends Component<FileSystemProps, any> {
     constructor(props) {
-        super(props);
+        super(props)
         this.state = {
-            pathStack: this.props.pathStack,
+            pathStack: this.props.PathStack
         }
     }
     componentDidMount() {
         BackHandler.addEventListener('hardwareBackPress', () => {
-            return this.back();
+            return this.back()
         })
         console.log('did mount')
     }
     componentWillUnmount() {
         console.log('un mount')
         BackHandler.removeEventListener('hardwareBackPress', () => {
-            return this.back();
+            return this.back()
 
         })
     }
     back = () => {
-        let _pathStack = this.state.pathStack
-        if (_pathStack.length !== 1) {
-            _pathStack.pop();
-            this.setState({
-                pathStack: _pathStack
-            });
-            return true;
+        if (this.props.PathStack.length !== 1) {
+            this.props.Dispatch(FileManagerActions.closeDir())
+            return true
         } else {
-            return false;
+            return false
         }
 
     }
     onPress = (selected) => {
         if (selected.isDirectory()) {
-            let _pathStack = this.state.pathStack
-            _pathStack.push(selected.path);
-            this.setState({ pathStack: _pathStack })
+            this.props.Dispatch(FileManagerActions.openDir(selected.path))
         }
     }
     onLongPress = (selected) => {
-        if (!this.props.selectedOption) {
-            let isAlreadySelected = this.props.source.indexOf(selected.path);
+        if (!this.props.SelectedAction) {
+            let isAlreadySelected = this.props.Source.indexOf(selected.path)
             if (isAlreadySelected >= 0) {
-                let _source = _.clone(this.props.source);
-                _source.splice(isAlreadySelected, 1);
-                this.props.setPropsToState({ source: _source },
-                    () => {
-                        if (_.isEmpty(this.props.source)) {
-                            this.props.setPropsToState({
-                                selectedOption: ''
-                            });
-                        }
-                    });
+                this.props.Dispatch(FileManagerActions.deSelectSource(selected.path))
             } else {
-                let _source = _.clone(this.props.source);
-                _source.push(selected.path)
-                this.props.setPropsToState({ source: _source });
+                this.props.Dispatch(FileManagerActions.selectSource(selected.path))
             }
         } else {
-            let isAlreadySelected = this.props.destination.indexOf(selected.path);
+            let isAlreadySelected = this.props.Destination.indexOf(selected.path)
             if (isAlreadySelected >= 0) {
-                let _destination = _.clone(this.props.destination);
-                _destination.splice(isAlreadySelected, 1);
-                this.props.setPropsToState({ destination: _destination });
+                this.props.Dispatch(FileManagerActions.deSelectDestination(selected.path))
             } else {
-                let _destination = _.clone(this.props.destination);
-                _destination.push(selected.path)
-                this.props.setPropsToState({ destination: _destination });
+                this.props.Dispatch(FileManagerActions.selectDestination(selected.path))
             }
         }
 
     }
     getFileSystem = () => {
-        return RNFS.readDir(_.last(this.state.pathStack))
+        return RNFS.readDir(_.last(this.props.PathStack))
             .then((result) => {
-                return Promise.all(result);
-            });
+                return Promise.all(result)
+            })
     }
     getStyle = (item) => {
-        if (this.props.destination.indexOf(item.path) >= 0) {
+        if (this.props.Destination.indexOf(item.path) >= 0) {
             if (item.isDirectory()) {
                 return [styles.listItem, styles.destinationDirectorySelected]
             } else {
                 return [styles.listItem, styles.destinationFileSelected]
             }
-        } else if (this.props.source.indexOf(item.path) >= 0) {
+        } else if (this.props.Source.indexOf(item.path) >= 0) {
             if (item.isDirectory()) {
                 return [styles.listItem, styles.sourceDirectorySelected]
             } else {
@@ -103,7 +85,7 @@ export class FileSystem extends Component<any, any> {
             }
         }
     }
-    _keyExtractor = (item) => item.name;
+    _keyExtractor = (item) => item.name
     _renderItem = ({ item }) => (
         <TouchableOpacity onLongPress={this.onLongPress.bind(this, item)} onPress={this.onPress.bind(this, item)}>
             {
@@ -113,7 +95,7 @@ export class FileSystem extends Component<any, any> {
                         <View style={styles.dirImage}>
                             <Image
                                 style={styles.dirImage}
-                                source={require('../res/inAppImages/folder.png')}
+                                source={require('/home/sharath/dev/sampleApp_typescript/react-native/res/inAppImages/folder.png')}
                             />
                         </View>
                         <Text style={[styles.directoryText]}>{_.last(item.path.split('/')) + '/'}</Text>
@@ -123,7 +105,7 @@ export class FileSystem extends Component<any, any> {
                         <View style={styles.fileImage}>
                             <Image
                                 style={styles.fileImage}
-                                source={require('../res/inAppImages/file.png')}
+                                source={require('/home/sharath/dev/sampleApp_typescript/react-native/res/inAppImages/file.png')}
                             />
                         </View>
                         <Text style={[styles.fileText]}>{_.last(item.path.split('/'))}</Text>
@@ -146,15 +128,25 @@ export class FileSystem extends Component<any, any> {
                     }
                 } />
             </View>
-        );
+        )
     }
 }
+function mapStateToProps(state: IReducer) {
+    return {
+        App: state.App,
+        FileManager: state.FileManager
+     }
+}
+function mapDispatchToProps(dispatch: any) {
+    return { Dispatch: dispatch }
+}
+export default connect(mapStateToProps, mapDispatchToProps)(FileSystem)
 const styles = StyleSheet.create({
     container: {
         flex: 1,
         // justifyContent: 'center',
         // alignItems: 'center',
-        backgroundColor: '#303a4c',
+        backgroundColor: '#303a4c'
     },
     listItem: {
         flexDirection: 'row',
@@ -162,7 +154,7 @@ const styles = StyleSheet.create({
         borderStyle: 'solid',
         borderColor: 'black',
         borderRadius: 5,
-        margin: 2,
+        margin: 2
     },
     toolbar: {
         flexDirection: 'row',
@@ -221,7 +213,7 @@ const styles = StyleSheet.create({
     },
     longPressActionInfo: {
         // height: 50,
-        opacity: 5,
+        opacity: 5
     },
     pathText: {
         color: '#f4bc42',
@@ -239,5 +231,4 @@ const styles = StyleSheet.create({
         color: '#ffffff',
         fontWeight: 'bold'
     }
-});
-export default FileSystem
+})

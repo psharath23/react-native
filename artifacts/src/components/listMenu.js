@@ -1,5 +1,6 @@
 import React, { Component } from 'react';
 import { TouchableOpacity, FlatList, Text } from 'react-native';
+import { connect } from 'react-redux';
 export class ListMenu extends Component {
     constructor(props) {
         super(props);
@@ -9,5 +10,14 @@ export class ListMenu extends Component {
                 React.createElement(Text, { style: [this.props.style.listItem, { textAlign: 'center' }] }, item)) }));
     }
 }
-export default ListMenu;
+function mapStateToProps(state) {
+    return {
+        App: state.App,
+        FileManager: state.FileManager
+    };
+}
+function mapDispatchToProps(dispatch) {
+    return { Dispatch: dispatch };
+}
+export default connect(mapStateToProps, mapDispatchToProps)(ListMenu);
 //# sourceMappingURL=listMenu.js.map

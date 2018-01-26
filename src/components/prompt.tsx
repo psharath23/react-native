@@ -1,14 +1,16 @@
-import React, { Component } from 'react';
+import React, { Component } from 'react'
 import { View, Text, StyleSheet, Button, Dimensions, Modal, TextInput } from 'react-native'
+import { IReducer } from '../interfaces/index'
+import {Dispatch, Action, connect} from 'react-redux'
 export class Prompt extends Component<any, any> {
     constructor(props) {
-        super(props);
+        super(props)
         this.state = {
             promptValue: ''
         }
     }
     render() {
-        console.log('change', this.state.promptValue);
+        console.log('change', this.state.promptValue)
         return (
             <Modal
                 visible={this.props.visible}
@@ -51,21 +53,21 @@ const styles = StyleSheet.create({
         width: Dimensions.get('window').width - 100,
         position: 'absolute',
         top: Dimensions.get('window').height - 450,
-        left: Dimensions.get('window').width - 310,
+        left: Dimensions.get('window').width - 310
     },
     cancelButton: {
         width: '50%',
-        backgroundColor: '#f44242',
+        backgroundColor: '#f44242'
     },
     confirmButton: {
         width: '50%',
-        backgroundColor: '#4a9b3e',
+        backgroundColor: '#4a9b3e'
     },
     cancelButtonText: {
-        color: '#ffffff',
+        color: '#ffffff'
     },
     confirmButtonText: {
-        color: '#ffffff',
+        color: '#ffffff'
     },
     button: {
         flexDirection: 'row',
@@ -75,4 +77,13 @@ const styles = StyleSheet.create({
         color: '#020202'
     }
 })
-export default Prompt
+function mapStateToProps(state: IReducer) {
+    return {
+        App: state.App,
+        FileManager: state.FileManager
+     }
+}
+function mapDispatchToProps(dispatch: any) {
+    return { Dispatch: dispatch }
+}
+export default connect(mapStateToProps, mapDispatchToProps)(ListMenu)

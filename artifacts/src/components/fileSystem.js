@@ -3,16 +3,14 @@ import { TouchableOpacity, FlatList, BackHandler, View, Text, StyleSheet, Image 
 import Async from 'react-promise';
 import _ from 'lodash';
 import * as RNFS from 'react-native-fs';
+import { connect } from 'react-redux';
+import FileManagerActions from '../actions/filemanager.action';
 export class FileSystem extends Component {
     constructor(props) {
         super(props);
         this.back = () => {
-            let _pathStack = this.state.pathStack;
-            if (_pathStack.length !== 1) {
-                _pathStack.pop();
-                this.setState({
-                    pathStack: _pathStack
-                });
+            if (this.props.PathStack.length !== 1) {
+                this.props.Dispatch(FileManagerActions.closeDir());
                 return true;
             }
             else {
@@ -21,53 +19,37 @@ export class FileSystem extends Component {
         };
         this.onPress = (selected) => {
             if (selected.isDirectory()) {
-                let _pathStack = this.state.pathStack;
-                _pathStack.push(selected.path);
-                this.setState({ pathStack: _pathStack });
+                this.props.Dispatch(FileManagerActions.openDir(selected.path));
             }
         };
         this.onLongPress = (selected) => {
-            if (!this.props.selectedOption) {
-                let isAlreadySelected = this.props.source.indexOf(selected.path);
+            if (!this.props.SelectedAction) {
+                let isAlreadySelected = this.props.Source.indexOf(selected.path);
                 if (isAlreadySelected >= 0) {
-                    let _source = _.clone(this.props.source);
-                    _source.splice(isAlreadySelected, 1);
-                    this.props.setPropsToState({ source: _source }, () => {
-                        if (_.isEmpty(this.props.source)) {
-                            this.props.setPropsToState({
-                                selectedOption: ''
-                            });
-                        }
-                    });
+                    this.props.Dispatch(FileManagerActions.deSelectSource(selected.path));
                 }
                 else {
-                    let _source = _.clone(this.props.source);
-                    _source.push(selected.path);
-                    this.props.setPropsToState({ source: _source });
+                    this.props.Dispatch(FileManagerActions.selectSource(selected.path));
                 }
             }
             else {
-                let isAlreadySelected = this.props.destination.indexOf(selected.path);
+                let isAlreadySelected = this.props.Destination.indexOf(selected.path);
                 if (isAlreadySelected >= 0) {
-                    let _destination = _.clone(this.props.destination);
-                    _destination.splice(isAlreadySelected, 1);
-                    this.props.setPropsToState({ destination: _destination });
+                    this.props.Dispatch(FileManagerActions.deSelectDestination(selected.path));
                 }
                 else {
-                    let _destination = _.clone(this.props.destination);
-                    _destination.push(selected.path);
-                    this.props.setPropsToState({ destination: _destination });
+                    this.props.Dispatch(FileManagerActions.selectDestination(selected.path));
                 }
             }
         };
         this.getFileSystem = () => {
-            return RNFS.readDir(_.last(this.state.pathStack))
+            return RNFS.readDir(_.last(this.props.PathStack))
                 .then((result) => {
                 return Promise.all(result);
             });
         };
         this.getStyle = (item) => {
-            if (this.props.destination.indexOf(item.path) >= 0) {
+            if (this.props.Destination.indexOf(item.path) >= 0) {
                 if (item.isDirectory()) {
                     return [styles.listItem, styles.destinationDirectorySelected];
                 }
@@ -75,7 +57,7 @@ export class FileSystem extends Component {
                     return [styles.listItem, styles.destinationFileSelected];
                 }
             }
-            else if (this.props.source.indexOf(item.path) >= 0) {
+            else if (this.props.Source.indexOf(item.path) >= 0) {
                 if (item.isDirectory()) {
                     return [styles.listItem, styles.sourceDirectorySelected];
                 }
@@ -97,15 +79,15 @@ export class FileSystem extends Component {
             ?
                 React.createElement(View, { style: this.getStyle(item) },
                     React.createElement(View, { style: styles.dirImage },
-                        React.createElement(Image, { style: styles.dirImage, source: require('../res/inAppImages/folder.png') })),
+                        React.createElement(Image, { style: styles.dirImage, source: require('/home/sharath/dev/sampleApp_typescript/react-native/res/inAppImages/folder.png') })),
                     React.createElement(Text, { style: [styles.directoryText] }, _.last(item.path.split('/')) + '/'))
             :
                 React.createElement(View, { style: this.getStyle(item) },
                     React.createElement(View, { style: styles.fileImage },
-                        React.createElement(Image, { style: styles.fileImage, source: require('../res/inAppImages/file.png') })),
+                        React.createElement(Image, { style: styles.fileImage, source: require('/home/sharath/dev/sampleApp_typescript/react-native/res/inAppImages/file.png') })),
                     React.createElement(Text, { style: [styles.fileText] }, _.last(item.path.split('/'))))));
         this.state = {
-            pathStack: this.props.pathStack,
+            pathStack: this.props.PathStack
         };
     }
     componentDidMount() {
@@ -127,12 +109,22 @@ export class FileSystem extends Component {
                 } })));
     }
 }
+function mapStateToProps(state) {
+    return {
+        App: state.App,
+        FileManager: state.FileManager
+    };
+}
+function mapDispatchToProps(dispatch) {
+    return { Dispatch: dispatch };
+}
+export default connect(mapStateToProps, mapDispatchToProps)(FileSystem);
 const styles = StyleSheet.create({
     container: {
         flex: 1,
         // justifyContent: 'center',
         // alignItems: 'center',
-        backgroundColor: '#303a4c',
+        backgroundColor: '#303a4c'
     },
     listItem: {
         flexDirection: 'row',
@@ -140,7 +132,7 @@ const styles = StyleSheet.create({
         borderStyle: 'solid',
         borderColor: 'black',
         borderRadius: 5,
-        margin: 2,
+        margin: 2
     },
     toolbar: {
         flexDirection: 'row',
@@ -197,7 +189,7 @@ const styles = StyleSheet.create({
     },
     longPressActionInfo: {
         // height: 50,
-        opacity: 5,
+        opacity: 5
     },
     pathText: {
         color: '#f4bc42',
@@ -216,5 +208,4 @@ const styles = StyleSheet.create({
         fontWeight: 'bold'
     }
 });
-export default FileSystem;
 //# sourceMappingURL=fileSystem.js.map

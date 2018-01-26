@@ -1,25 +1,20 @@
-import React, { Component } from 'react';
+import React, { Component } from 'react'
 import { View, StyleSheet, Button } from 'react-native'
+import { connect } from 'react-redux'
+import { IReducer, dispatch } from '../interfaces/index'
+import FileManagerActions from '../actions/filemanager.action'
 export class ConfirmAction extends Component<any, any> {
     constructor(props) {
-        super(props);
+        super(props)
     }
     cancelAction = () => {
-        this.props.setPropsToState({
-            selectedOption: '',
-            destination: [],
-            source: [],
-            isActionConfirmed: false
-        }, () => {
-            this.props.action();
-        });
+        this.props.Dispatch(FileManagerActions.cancelFileAction())
+        this.props.action()
     }
     confirmAction = () => {
-        this.props.setPropsToState({
-            isActionConfirmed: true
-        }, () => {
-            this.props.action();
-        });
+        this.props.Dispatch(FileManagerActions.selectedFileAction(''))
+        this.props.action()
+        this.props.Dispatch(FileManagerActions.fileActionCompleted())
     }
 
     render() {
@@ -40,28 +35,36 @@ export class ConfirmAction extends Component<any, any> {
                     />
                 </View>
             </View>
-        );
+        )
     }
 }
+function mapStateToProps(state: IReducer) {
+    return {
+        App: state.App,
+        FileManager: state.FileManager
+    }
+}
+function mapDispatchToProps(dispatch: any) {
+    return { Dispatch: dispatch }
+}
+export default connect(mapStateToProps, mapDispatchToProps)(ConfirmAction)
 const styles = StyleSheet.create({
     cancelButton: {
         width: '50%',
-        backgroundColor: '#f44242',
+        backgroundColor: '#f44242'
     },
     confirmButton: {
         width: '50%',
-        backgroundColor: '#4a9b3e',
+        backgroundColor: '#4a9b3e'
     },
     cancelButtonText: {
-        color: '#ffffff',
+        color: '#ffffff'
     },
     confirmButtonText: {
-        color: '#ffffff',
+        color: '#ffffff'
     },
     actionBar: {
         flexDirection: 'row',
         backgroundColor: '#a9c1e8'
     }
-});
-
-export default ConfirmAction
+})
