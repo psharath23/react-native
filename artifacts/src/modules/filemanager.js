@@ -1,12 +1,12 @@
-import React, { Component } from 'react';
-import * as RNFS from 'react-native-fs';
 import _ from 'lodash';
+import React, { Component } from 'react';
+import { Dimensions, StyleSheet, ToastAndroid, ToolbarAndroid, View } from 'react-native';
+import * as RNFS from 'react-native-fs';
 import { connect } from 'react-redux';
-import ListMenu from '../components/listMenu';
-import { StyleSheet, View, ToolbarAndroid, ToastAndroid, Dimensions } from 'react-native';
-import FileSystem from '../components/fileSystem';
 import ConfirmAction from '../components/confirmAction';
 import CustomActivityIndicator from '../components/customActivityIndicator';
+import FileSystem from '../components/fileSystem';
+import ListMenu from '../components/listMenu';
 import Prompt from '../components/prompt';
 export class FileManager extends Component {
     constructor(props) {
@@ -34,7 +34,7 @@ export class FileManager extends Component {
         this.promptTitle = 'New Folder';
         this.promptPlaceHolder = 'foldername (or) folder1 name,folder2 name,...';
         this._toolbarActions = () => [
-            { title: 'menu', icon: require('/home/sharath/dev/sampleApp_typescript/react-native/res/toolbar/menu.png'), show: 'always' }
+            { title: 'menu', icon: require('@res/toolbar/menu.png'), show: 'always' }
         ];
         this._onActionSelected = (position) => {
             let menu = this._menuDataList();
@@ -292,7 +292,7 @@ export class FileManager extends Component {
     render() {
         return (React.createElement(View, { style: styles.container },
             React.createElement(View, null,
-                React.createElement(ToolbarAndroid, { style: styles.toolbar, title: 'File Manager', actions: this._toolbarActions(), onActionSelected: this._onActionSelected, navIcon: require('/home/sharath/dev/sampleApp_typescript/react-native/res/toolbar/back.png'), onIconClicked: this.back })),
+                React.createElement(ToolbarAndroid, { style: styles.toolbar, title: 'File Manager', actions: this._toolbarActions(), onActionSelected: this._onActionSelected, navIcon: require('@res/toolbar/back.png'), onIconClicked: this.back })),
             React.createElement(View, null, this.state.isMenuClicked === true && React.createElement(ListMenu, Object.assign({}, this.menuData))),
             React.createElement(View, { style: this.state.selectedOption !== '' && !_.isEmpty(this.state.destination) ?
                     styles.fileSystemAfterOption :

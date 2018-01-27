@@ -1,16 +1,16 @@
-import React, { Component } from 'react'
-import { View, Text, StyleSheet, Button, Dimensions, Modal, TextInput } from 'react-native'
-import { IReducer } from '../interfaces/index'
-import {Dispatch, Action, connect} from 'react-redux'
+import React, { Component } from 'react';
+import { Button, Dimensions, Modal, StyleSheet, Text, TextInput, View } from 'react-native';
+import { connect } from 'react-redux';
+import { IReducer } from '../interfaces/index';
 export class Prompt extends Component<any, any> {
     constructor(props) {
-        super(props)
+        super(props);
         this.state = {
             promptValue: ''
-        }
+        };
     }
     render() {
-        console.log('change', this.state.promptValue)
+        console.log('change', this.state.promptValue);
         return (
             <Modal
                 visible={this.props.visible}
@@ -41,7 +41,7 @@ export class Prompt extends Component<any, any> {
                     </View>
                 </View>
             </Modal>
-        )
+        );
     }
 }
 const styles = StyleSheet.create({
@@ -76,14 +76,14 @@ const styles = StyleSheet.create({
     modalTitle: {
         color: '#020202'
     }
-})
+});
 function mapStateToProps(state: IReducer) {
     return {
         App: state.App,
         FileManager: state.FileManager
-     }
+    };
 }
 function mapDispatchToProps(dispatch: any) {
-    return { Dispatch: dispatch }
+    return { Dispatch: dispatch };
 }
-export default connect(mapStateToProps, mapDispatchToProps)(ListMenu)
+export default connect(mapStateToProps, mapDispatchToProps)(Prompt);

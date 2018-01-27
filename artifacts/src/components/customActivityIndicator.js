@@ -1,5 +1,5 @@
 import React, { Component } from 'react';
-import { View, StyleSheet, Image, Modal, Dimensions } from 'react-native';
+import { Dimensions, Image, Modal, StyleSheet, View } from 'react-native';
 import { connect } from 'react-redux';
 export class CustomActivityIndicator extends Component {
     constructor(props) {
@@ -11,7 +11,7 @@ export class CustomActivityIndicator extends Component {
         return (React.createElement(View, null,
             React.createElement(Modal, { visibile: this.props.isVisible, transparent: true },
                 React.createElement(View, null,
-                    React.createElement(Image, { style: styles.modal, source: require('/home/sharath/dev/sampleApp_typescript/react-native/res/inAppImages/loading.gif') })))));
+                    React.createElement(Image, { style: styles.modal, source: require('@res/inAppImages/loading.gif') })))));
     }
 }
 function mapStateToProps(state) {

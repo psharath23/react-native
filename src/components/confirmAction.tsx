@@ -1,20 +1,20 @@
-import React, { Component } from 'react'
-import { View, StyleSheet, Button } from 'react-native'
-import { connect } from 'react-redux'
-import { IReducer, dispatch } from '../interfaces/index'
-import FileManagerActions from '../actions/filemanager.action'
+import React, { Component } from 'react';
+import { Button, StyleSheet, View } from 'react-native';
+import { connect } from 'react-redux';
+import FileManagerActions from '../actions/filemanager.action';
+import { IReducer } from '../interfaces/index';
 export class ConfirmAction extends Component<any, any> {
     constructor(props) {
-        super(props)
+        super(props);
     }
     cancelAction = () => {
-        this.props.Dispatch(FileManagerActions.cancelFileAction())
-        this.props.action()
+        this.props.Dispatch(FileManagerActions.cancelFileAction());
+        this.props.action();
     }
     confirmAction = () => {
-        this.props.Dispatch(FileManagerActions.selectedFileAction(''))
-        this.props.action()
-        this.props.Dispatch(FileManagerActions.fileActionCompleted())
+        this.props.Dispatch(FileManagerActions.selectedFileAction(''));
+        this.props.action();
+        this.props.Dispatch(FileManagerActions.fileActionCompleted());
     }
 
     render() {
@@ -35,19 +35,19 @@ export class ConfirmAction extends Component<any, any> {
                     />
                 </View>
             </View>
-        )
+        );
     }
 }
 function mapStateToProps(state: IReducer) {
     return {
         App: state.App,
         FileManager: state.FileManager
-    }
+    };
 }
 function mapDispatchToProps(dispatch: any) {
-    return { Dispatch: dispatch }
+    return { Dispatch: dispatch };
 }
-export default connect(mapStateToProps, mapDispatchToProps)(ConfirmAction)
+export default connect(mapStateToProps, mapDispatchToProps)(ConfirmAction);
 const styles = StyleSheet.create({
     cancelButton: {
         width: '50%',
@@ -67,4 +67,4 @@ const styles = StyleSheet.create({
         flexDirection: 'row',
         backgroundColor: '#a9c1e8'
     }
-})
+});

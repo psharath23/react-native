@@ -5,7 +5,7 @@
         "moduleResolution": "node",
         "jsx": "react",
         "outDir": "artifacts",
-        "rootDir": "",
+        "rootDir": ".",
         "allowSyntheticDefaultImports": true,
         "noImplicitAny": false,
         "preserveConstEnums": true,
@@ -14,7 +14,13 @@
         "noImplicitReturns": false,
         "noUnusedParameters": true,
         "noUnusedLocals": true,
-        "watch":true,
+        "watch": true,
+        "baseUrl": "",
+        "paths": {
+            "@res": [
+                "res/*"
+            ]
+        }
     },
     "filesGlob": [
         "typings/index.d.ts",
@@ -33,5 +39,5 @@
         "node_modules"
     ],
     "compileOnSave": true,
-    "watch":true
+    "watch": true
 }

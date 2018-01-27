@@ -1,11 +1,8 @@
-import { IFileManagerState, FileManagerProps, FileSystemProps } from './filemanager.interface'
-import { IAppState } from './app.interface'
-import {Dispatch, Action} from 'redux'
-export  {IAppState} from './app.interface'
-export {IFileManagerState, FileManagerProps, FileSystemProps} from './filemanager.interface'
+import { IAppState } from './app.interface';
+import { FileManagerProps, FileSystemProps, IFileManagerState } from './filemanager.interface';
+export { IAppState } from './app.interface';
+export { IFileManagerState, FileManagerProps, FileSystemProps };
 export interface IReducer {
-    App: IAppState
-    FileManager: IFileManagerState
+    App: IAppState;
+    FileManager: IFileManagerState;
 }
-export type _Dispatch= Dispatch<Action>
-export let dispatch: _Dispatch

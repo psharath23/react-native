@@ -1,10 +1,10 @@
-import React, { Component } from 'react'
-import { TouchableOpacity, FlatList, Text } from 'react-native'
-import {Dispatch, Action, connect} from 'react-redux'
-import { IReducer } from '../interfaces/index'
+import React, { Component } from 'react';
+import { FlatList, Text, TouchableOpacity } from 'react-native';
+import { connect } from 'react-redux';
+import { IReducer } from '../interfaces/index';
 export class ListMenu extends Component<any, any> {
     constructor(props) {
-        super(props)
+        super(props);
     }
     render() {
         return (
@@ -19,16 +19,16 @@ export class ListMenu extends Component<any, any> {
                         </TouchableOpacity>
                 }
             />
-        )
+        );
     }
 }
 function mapStateToProps(state: IReducer) {
     return {
         App: state.App,
         FileManager: state.FileManager
-     }
+    };
 }
 function mapDispatchToProps(dispatch: any) {
-    return { Dispatch: dispatch }
+    return { Dispatch: dispatch };
 }
-export default connect(mapStateToProps, mapDispatchToProps)(ListMenu)
+export default connect(mapStateToProps, mapDispatchToProps)(ListMenu);

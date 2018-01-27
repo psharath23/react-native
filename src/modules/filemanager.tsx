@@ -1,23 +1,23 @@
-import React, { Component } from 'react'
-import * as RNFS from 'react-native-fs'
-import _ from 'lodash'
-import { connect } from 'react-redux'
-import ListMenu from '../components/listMenu'
+import _ from 'lodash';
+import React, { Component } from 'react';
 import {
+    Dimensions,
     StyleSheet,
-    View,
-    ToolbarAndroid,
     ToastAndroid,
-    Dimensions
-} from 'react-native'
-import {  IReducer, FileManagerProps } from './../interfaces'
-import FileSystem from '../components/fileSystem'
-import ConfirmAction from '../components/confirmAction'
-import CustomActivityIndicator from '../components/customActivityIndicator'
-import Prompt from '../components/prompt'
+    ToolbarAndroid,
+    View
+} from 'react-native';
+import * as RNFS from 'react-native-fs';
+import { connect } from 'react-redux';
+import ConfirmAction from '../components/confirmAction';
+import CustomActivityIndicator from '../components/customActivityIndicator';
+import FileSystem from '../components/fileSystem';
+import ListMenu from '../components/listMenu';
+import Prompt from '../components/prompt';
+import { FileManagerProps, IReducer } from './../interfaces';
 export class FileManager extends Component<FileManagerProps, any> {
     constructor(props) {
-        super(props)
+        super(props);
         this.state = {
             pathStack: [RNFS.ExternalStorageDirectoryPath],
             source: [],
@@ -29,36 +29,36 @@ export class FileManager extends Component<FileManagerProps, any> {
             isPromptVisible: false,
             isRenameClicked: false,
             inTask: false
-        }
+        };
     }
     onPromptCancel = () => {
-        this.setState({ isPromptVisible: false })
+        this.setState({ isPromptVisible: false });
     }
     onPromptSubmit = (value) => {
-        console.log('value', value)
+        console.log('value', value);
         if (!value) {
-            ToastAndroid.show(`No folder(s) name(s) entered`, ToastAndroid.SHORT)
-            return
+            ToastAndroid.show(`No folder(s) name(s) entered`, ToastAndroid.SHORT);
+            return;
         }
         this.setState({ isPromptVisible: false, newFolder: value.split(',') },
             () => {
-                console.log('statenewfolder', this.state.newFolder)
+                console.log('statenewfolder', this.state.newFolder);
                 if (_.isEmpty(this.state.newFolder)) {
-                    ToastAndroid.show(`No folder(s) name(s) entered`, ToastAndroid.SHORT)
-                    return
+                    ToastAndroid.show(`No folder(s) name(s) entered`, ToastAndroid.SHORT);
+                    return;
                 } else {
-                    this.createNewFolder()
+                    this.createNewFolder();
                 }
-            })
+            });
     }
-    promptTitle = 'New Folder'
-    promptPlaceHolder = 'foldername (or) folder1 name,folder2 name,...'
+    promptTitle = 'New Folder';
+    promptPlaceHolder = 'foldername (or) folder1 name,folder2 name,...';
     _toolbarActions = () => [
-        { title: 'menu', icon: require('/home/sharath/dev/sampleApp_typescript/react-native/res/toolbar/menu.png'), show: 'always' }
+        { title: 'menu', icon: require('@res/toolbar/menu.png'), show: 'always' }
     ]
     _onActionSelected = (position) => {
-        let menu = this._menuDataList()
-        this.onActionSelected(menu[position].title)
+        let menu = this._menuDataList();
+        this.onActionSelected(menu[position].title);
     }
     fileSystemProps = () => ({
         setPropsToState: this.setPropsToState,
@@ -76,12 +76,12 @@ export class FileManager extends Component<FileManagerProps, any> {
     })
     actions = () => {
         switch (this.state.selectedOption) {
-            case 'copy': return this.copy
-            case 'move': return this.move
-            case 'copy here': return this.copy
-            case 'move here': return this.move
-            case 'delete': return this.delete
-            case '': return this.initialState
+            case 'copy': return this.copy;
+            case 'move': return this.move;
+            case 'copy here': return this.copy;
+            case 'move here': return this.move;
+            case 'delete': return this.delete;
+            case '': return this.initialState;
             default:
         }
     }
@@ -94,7 +94,7 @@ export class FileManager extends Component<FileManagerProps, any> {
             selectedOption: '',
             isActionConfirmed: false,
             inTask: false
-        })
+        });
     }
     confirmActionProps = () => ({
         setPropsToState: this.setPropsToState,
@@ -103,192 +103,192 @@ export class FileManager extends Component<FileManagerProps, any> {
     })
     menuDataList = () => {
         if (!_.isEmpty(this.state.source) && this.state.selectedOption && this.state.selectedOption !== 'delete') {
-            return [`${this.state.selectedOption} here`]
+            return [`${this.state.selectedOption} here`];
         } else if (!_.isEmpty(this.state.source)) {
-            return ['copy', 'move', 'delete', 'properties']
+            return ['copy', 'move', 'delete', 'properties'];
         } else if (this.state.source.length === 1) {
-            return ['copy', 'move', 'delete', 'properties', 'rename']
+            return ['copy', 'move', 'delete', 'properties', 'rename'];
         } else {
-            return ['new folder', 'properties']
+            return ['new folder', 'properties'];
         }
     }
     _menuDataList = () => {
         if (!_.isEmpty(this.props.Source) && this.props.SelectedAction && this.state.SelectedAction !== 'delete') {
             return [
                 { title: `${this.state.selectedOption} here`, show: 'never' }
-            ]
+            ];
         } else if (!_.isEmpty(this.state.source)) {
             return [
-                {title: 'copy', show: 'never'},
-                {title: 'move', show: 'never'},
-                {title: 'delete', show: 'never'},
-                {title: 'properties', show: 'never'}
-            ]
+                { title: 'copy', show: 'never' },
+                { title: 'move', show: 'never' },
+                { title: 'delete', show: 'never' },
+                { title: 'properties', show: 'never' }
+            ];
         } else if (this.state.source.length === 1) {
             return [
-                {title: 'copy', show: 'never'},
-                {title: 'move', show: 'never'},
-                {title: 'delete', show: 'never'},
-                {title: 'properties', show: 'never'},
-                {title: 'rename', show: 'never'}
-            ]
+                { title: 'copy', show: 'never' },
+                { title: 'move', show: 'never' },
+                { title: 'delete', show: 'never' },
+                { title: 'properties', show: 'never' },
+                { title: 'rename', show: 'never' }
+            ];
         } else {
             return [
-                {title: 'properties', show: 'never'},
-                {title: 'rename', show: 'never'}
-            ]
+                { title: 'properties', show: 'never' },
+                { title: 'rename', show: 'never' }
+            ];
         }
     }
     menuData = {
         data: this.menuDataList.bind(this),
         style: styles,
         onPress: (option) => this.onActionSelected(option)
-    }
+    };
     back = () => {
-        let _pathStack = this.state.pathStack
+        let _pathStack = this.state.pathStack;
         if (_pathStack.length !== 1) {
-            _pathStack.pop()
+            _pathStack.pop();
         }
         this.setState({
             pathStack: _pathStack
-        })
+        });
 
     }
     onActionSelected = (option) => {
-        this.setState({ selectedOption: option, isMenuClicked: false })
+        this.setState({ selectedOption: option, isMenuClicked: false });
         switch (option) {
             case 'delete': {
-                this.delete()
-                break
+                this.delete();
+                break;
             }
             case 'new folder': {
-                this.setState({ isPromptVisible: true })
-                break
+                this.setState({ isPromptVisible: true });
+                break;
             }
             case 'properties': {
-                break
+                break;
             }
-            case 'rename': this.setState({ isRenameClicked: true })
+            case 'rename': this.setState({ isRenameClicked: true });
             case 'move here':
             case 'copy here': {
-                let _destination = this.state.destination
-                _destination.push(_.last(this.state.pathStack))
-                this.setState({ destination: _destination })
+                let _destination = this.state.destination;
+                _destination.push(_.last(this.state.pathStack));
+                this.setState({ destination: _destination });
             }
         }
     }
     createNewFolder = () => {
         if (!_.isEmpty(this.state.source)) {
-            this.setState({ inTask: true })
+            this.setState({ inTask: true });
             _.each(this.state.source, (path) => {
                 _.each(this.state.newFolder, (name) => {
                     RNFS.mkdir(path + '/' + name)
                         .then((dir) => {
-                            console.log(dir)
-                            ToastAndroid.show(`new folder ${name} created at ${path}/`, ToastAndroid.SHORT)
-                            Promise.resolve()
+                            console.log(dir);
+                            ToastAndroid.show(`new folder ${name} created at ${path}/`, ToastAndroid.SHORT);
+                            Promise.resolve();
                         })
                         .catch((dir) => {
-                            console.log(dir)
-                            ToastAndroid.show(`failed to create new folder ${name} at ${path}/`, ToastAndroid.SHORT)
-                        })
-                })
-            })
+                            console.log(dir);
+                            ToastAndroid.show(`failed to create new folder ${name} at ${path}/`, ToastAndroid.SHORT);
+                        });
+                });
+            });
         } else {
             _.each(this.state.newFolder, (name) => {
                 RNFS.mkdir(_.last(this.state.pathStack) + '/' + name)
                     .then((dir) => {
-                        console.log(dir)
-                        ToastAndroid.show(`new folder ${name} created at ${_.last(this.state.pathStack)}/`, ToastAndroid.SHORT)
-                        Promise.resolve()
+                        console.log(dir);
+                        ToastAndroid.show(`new folder ${name} created at ${_.last(this.state.pathStack)}/`, ToastAndroid.SHORT);
+                        Promise.resolve();
                     })
                     .catch((dir) => {
-                        console.log(dir)
-                        ToastAndroid.show(`failed to create new folder ${name} at ${_.last(this.state.pathStack)}/`, ToastAndroid.SHORT)
-                    })
-            })
+                        console.log(dir);
+                        ToastAndroid.show(`failed to create new folder ${name} at ${_.last(this.state.pathStack)}/`, ToastAndroid.SHORT);
+                    });
+            });
         }
-        this.setState({ source: [], destination: [], selectedOption: '', newFolder: [], inTask: false })
+        this.setState({ source: [], destination: [], selectedOption: '', newFolder: [], inTask: false });
     }
     copy = () => {
-        this.setState({ isTaskRunning: true })
+        this.setState({ isTaskRunning: true });
         if (this.state.source.length === 0) {
-            ToastAndroid.show(`No file(s)/folder(s) selected`, ToastAndroid.SHORT)
-            this.setState({ isTaskRunning: false })
-            return
+            ToastAndroid.show(`No file(s)/folder(s) selected`, ToastAndroid.SHORT);
+            this.setState({ isTaskRunning: false });
+            return;
         }
-        this.setState({ inTask: true })
-        let copyCount = 0
+        this.setState({ inTask: true });
+        let copyCount = 0;
         _.each(this.state.source, (source) => {
             _.each(this.state.destination, (destination) => {
                 RNFS.copyFile(source, destination + '/' + _.last(source.split('/')))
                     .then((copy) => {
-                        console.log(copy)
-                        ToastAndroid.show(`${_.last(source.split('/'))} copied to ${destination}`, ToastAndroid.SHORT)
-                        copyCount++
-                        Promise.resolve(copyCount)
+                        console.log(copy);
+                        ToastAndroid.show(`${_.last(source.split('/'))} copied to ${destination}`, ToastAndroid.SHORT);
+                        copyCount++;
+                        Promise.resolve(copyCount);
                     })
                     .catch((err) => {
-                        console.log(err)
-                        ToastAndroid.show(`failed to copy ${_.last(source.split('/'))} to ${destination}`, ToastAndroid.SHORT)
-                    })
-            })
-        })
-        ToastAndroid.show(`total ${copyCount} file(s)/folder(s) copied out of ${this.state.source.length}`, ToastAndroid.SHORT)
-        this.setState({ source: [], destination: [], selectedOption: '', inTask: false })
+                        console.log(err);
+                        ToastAndroid.show(`failed to copy ${_.last(source.split('/'))} to ${destination}`, ToastAndroid.SHORT);
+                    });
+            });
+        });
+        ToastAndroid.show(`total ${copyCount} file(s)/folder(s) copied out of ${this.state.source.length}`, ToastAndroid.SHORT);
+        this.setState({ source: [], destination: [], selectedOption: '', inTask: false });
     }
     move = () => {
         if (this.state.source.length === 0) {
-            ToastAndroid.show(`No file(s)/folder(s) selected`, ToastAndroid.SHORT)
-            return
+            ToastAndroid.show(`No file(s)/folder(s) selected`, ToastAndroid.SHORT);
+            return;
         }
-        this.setState({ inTask: true })
-        let moveCount = 0
+        this.setState({ inTask: true });
+        let moveCount = 0;
         _.each(this.state.source, (source) => {
             _.each(this.state.destination, (destination) => {
                 RNFS.moveFile(source, destination + '/' + _.last(source.split('/')))
                     .then((move) => {
-                        console.log(move)
-                        ToastAndroid.show(`${_.last(source.split('/'))} moved to ${destination}`, ToastAndroid.SHORT)
-                        moveCount++
-                        Promise.resolve()
+                        console.log(move);
+                        ToastAndroid.show(`${_.last(source.split('/'))} moved to ${destination}`, ToastAndroid.SHORT);
+                        moveCount++;
+                        Promise.resolve();
                     })
                     .catch((err) => {
-                        console.log(err)
-                        ToastAndroid.show(`failed to move ${_.last(source.split('/'))} to ${destination}`, ToastAndroid.SHORT)
-                    })
-            })
-        })
-        ToastAndroid.show(`total ${moveCount} file(s)/folder(s) moved out of ${this.state.source.length}`, ToastAndroid.SHORT)
-        this.setState({ source: [], destination: [], selectedOption: '', inTask: false })
+                        console.log(err);
+                        ToastAndroid.show(`failed to move ${_.last(source.split('/'))} to ${destination}`, ToastAndroid.SHORT);
+                    });
+            });
+        });
+        ToastAndroid.show(`total ${moveCount} file(s)/folder(s) moved out of ${this.state.source.length}`, ToastAndroid.SHORT);
+        this.setState({ source: [], destination: [], selectedOption: '', inTask: false });
     }
     delete = () => {
         if (this.state.source.length === 0) {
-            ToastAndroid.show(`No file(s)/folder(s) selected`, ToastAndroid.SHORT)
-            return
+            ToastAndroid.show(`No file(s)/folder(s) selected`, ToastAndroid.SHORT);
+            return;
         }
-        this.setState({ inTask: true })
-        let deletedCount = 0
+        this.setState({ inTask: true });
+        let deletedCount = 0;
         _.each(this.state.source, (source) => {
             RNFS.unlink(source)
                 .then((res) => {
-                    console.log(res)
-                    ToastAndroid.show(`${source} deleted`, ToastAndroid.SHORT)
-                    deletedCount++
+                    console.log(res);
+                    ToastAndroid.show(`${source} deleted`, ToastAndroid.SHORT);
+                    deletedCount++;
                 })
                 .catch((err) => {
-                    console.log(err)
-                    ToastAndroid.show(`failed to delete ${source}`, ToastAndroid.SHORT)
-                })
-        })
-        ToastAndroid.show(`total ${deletedCount} file(s)/folder(s) deleted`, ToastAndroid.SHORT)
-        this.setState({ source: [], destination: [], selectedOption: '', inTask: false })
+                    console.log(err);
+                    ToastAndroid.show(`failed to delete ${source}`, ToastAndroid.SHORT);
+                });
+        });
+        ToastAndroid.show(`total ${deletedCount} file(s)/folder(s) deleted`, ToastAndroid.SHORT);
+        this.setState({ source: [], destination: [], selectedOption: '', inTask: false });
     }
     modalVisibilityHandler = () => {
-        this.setState({ isModalVisible: !this.state.isModalVisible })
+        this.setState({ isModalVisible: !this.state.isModalVisible });
     }
     setPropsToState = (props, callback) => {
-        this.setState(props, callback && callback())
+        this.setState(props, callback && callback());
     }
     render() {
         return (
@@ -298,7 +298,7 @@ export class FileManager extends Component<FileManagerProps, any> {
                         title='File Manager'
                         actions={this._toolbarActions()}
                         onActionSelected={this._onActionSelected}
-                        navIcon={require('/home/sharath/dev/sampleApp_typescript/react-native/res/toolbar/back.png')}
+                        navIcon={require('@res/toolbar/back.png')}
                         onIconClicked={this.back}
                     />
                 </View>
@@ -328,19 +328,19 @@ export class FileManager extends Component<FileManagerProps, any> {
                     {this.state.inTask && <CustomActivityIndicator isVisible={this.state.inTask} />}
                 </View>
             </View >
-        )
+        );
     }
 }
 function mapStateToProps(state: IReducer) {
     return {
         App: state.App,
         FileManager: state.FileManager
-    }
+    };
 }
 function mapDispatchToProps(dispatch: any) {
-    return { Dispatch: dispatch }
+    return { Dispatch: dispatch };
 }
-export default connect(mapStateToProps, mapDispatchToProps)(FileManager)
+export default connect(mapStateToProps, mapDispatchToProps)(FileManager);
 // export default FileManager
 const styles: any = StyleSheet.create({
     container: {
@@ -442,4 +442,4 @@ const styles: any = StyleSheet.create({
         zIndex: 2
     }
 
-})
+});

@@ -3,10 +3,10 @@
  * https://github.com/facebook/react-native
  * @flow
  */
-import React, { Component } from 'react'
-import FileManager from './modules/filemanager'
+import React, { Component } from 'react';
+import FileManager from './modules/filemanager';
 export default class App extends Component<any, any> {
   render() {
-    return <FileManager />
+    return <FileManager />;
   }
 }

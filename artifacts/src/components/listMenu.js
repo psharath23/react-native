@@ -1,5 +1,5 @@
 import React, { Component } from 'react';
-import { TouchableOpacity, FlatList, Text } from 'react-native';
+import { FlatList, Text, TouchableOpacity } from 'react-native';
 import { connect } from 'react-redux';
 export class ListMenu extends Component {
     constructor(props) {

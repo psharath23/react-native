@@ -1,8 +1,8 @@
-import React, { Component } from 'react';
-import { TouchableOpacity, FlatList, BackHandler, View, Text, StyleSheet, Image } from 'react-native';
-import Async from 'react-promise';
 import _ from 'lodash';
+import React, { Component } from 'react';
+import { BackHandler, FlatList, Image, StyleSheet, Text, TouchableOpacity, View } from 'react-native';
 import * as RNFS from 'react-native-fs';
+import Async from 'react-promise';
 import { connect } from 'react-redux';
 import FileManagerActions from '../actions/filemanager.action';
 export class FileSystem extends Component {
@@ -79,12 +79,12 @@ export class FileSystem extends Component {
             ?
                 React.createElement(View, { style: this.getStyle(item) },
                     React.createElement(View, { style: styles.dirImage },
-                        React.createElement(Image, { style: styles.dirImage, source: require('/home/sharath/dev/sampleApp_typescript/react-native/res/inAppImages/folder.png') })),
+                        React.createElement(Image, { style: styles.dirImage, source: require('@res/inAppImages/folder.png') })),
                     React.createElement(Text, { style: [styles.directoryText] }, _.last(item.path.split('/')) + '/'))
             :
                 React.createElement(View, { style: this.getStyle(item) },
                     React.createElement(View, { style: styles.fileImage },
-                        React.createElement(Image, { style: styles.fileImage, source: require('/home/sharath/dev/sampleApp_typescript/react-native/res/inAppImages/file.png') })),
+                        React.createElement(Image, { style: styles.fileImage, source: require('@res/inAppImages/file.png') })),
                     React.createElement(Text, { style: [styles.fileText] }, _.last(item.path.split('/'))))));
         this.state = {
             pathStack: this.props.PathStack

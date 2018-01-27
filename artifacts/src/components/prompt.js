@@ -1,5 +1,5 @@
 import React, { Component } from 'react';
-import { View, Text, StyleSheet, Button, Dimensions, Modal, TextInput } from 'react-native';
+import { Button, Dimensions, Modal, StyleSheet, Text, TextInput, View } from 'react-native';
 import { connect } from 'react-redux';
 export class Prompt extends Component {
     constructor(props) {
@@ -63,5 +63,5 @@ function mapStateToProps(state) {
 function mapDispatchToProps(dispatch) {
     return { Dispatch: dispatch };
 }
-export default connect(mapStateToProps, mapDispatchToProps)(ListMenu);
+export default connect(mapStateToProps, mapDispatchToProps)(Prompt);
 //# sourceMappingURL=prompt.js.map
