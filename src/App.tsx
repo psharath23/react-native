@@ -4,9 +4,21 @@
  * @flow
  */
 import React, { Component } from 'react';
+import { connect } from 'react-redux';
+import { IReducer } from 'src/interfaces';
 import FileManager from './modules/filemanager';
-export default class App extends Component<any, any> {
+export  class App extends Component<any, any> {
   render() {
     return <FileManager />;
   }
 }
+function mapStateToProps(state: IReducer) {
+  return {
+      App: state.App,
+      FileManager: state.FileManager
+  };
+}
+function mapDispatchToProps(dispatch: any) {
+  return { Dispatch: dispatch };
+}
+export default connect(mapStateToProps, mapDispatchToProps)(FileManager);

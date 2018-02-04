@@ -20,4 +20,3 @@ function mapDispatchToProps(dispatch) {
     return { Dispatch: dispatch };
 }
 export default connect(mapStateToProps, mapDispatchToProps)(ListMenu);
-//# sourceMappingURL=listMenu.js.map

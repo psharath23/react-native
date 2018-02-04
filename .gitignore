@@ -1,7 +1,9 @@
 # OSX
 #
 .DS_Store
-artifacts
+src/**/*.js
+src/**/*.js.map
+**/*.log
 # Xcode
 #
 build/

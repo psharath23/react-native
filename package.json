@@ -4,10 +4,11 @@
   "private": true,
   "scripts": {
     "tsc": "tsc",
-    "clean": "rimraf artifacts",
+    "clean": "rimraf src/**/*.js && rimraf *.js",
     "lint": "tslint src/**/*.ts",
     "build": "npm run clean && npm run tsc --",
     "start": "node node_modules/react-native/local-cli/cli.js start",
+    "start-android": "react-native bundle --platform android --dev false --entry-file index.js --bundle-output android/app/src/main/assets/index.android.bundle --assets-dest android/app/src/main/res && react-native run-android",
     "test": "jest"
   },
   "dependencies": {
@@ -19,7 +20,10 @@
     "react-promise": "^2.0.0",
     "react-redux": "^5.0.6",
     "redux": "^3.7.2",
+    "redux-logger": "^3.0.6",
     "redux-persist": "^5.5.0",
+    "redux-promise": "^0.5.3",
+    "redux-thunk": "^2.2.0",
     "tslint": "^5.9.1",
     "typescript": "^2.6.2"
   },

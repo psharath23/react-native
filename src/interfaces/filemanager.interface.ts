@@ -9,7 +9,8 @@ export interface FileManagerProps {
     Source: Array<string>
     Destination: Array<string>
     PathStack: Array<string>
-    SelectedAction: string
+    SelectedAction: string;
+    Dispatch:any
 }
 export interface FileSystemProps {
     Dispatch: any

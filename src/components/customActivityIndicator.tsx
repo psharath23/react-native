@@ -19,7 +19,7 @@ export class CustomActivityIndicator extends Component<any, any> {
                     <View>
                         <Image
                             style={styles.modal}
-                            source={require('@res/inAppImages/loading.gif')}
+                            source={require('./../../res/inAppImages/loading.gif')}
                         />
                     </View>
                 </Modal>

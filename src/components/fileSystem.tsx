@@ -4,14 +4,13 @@ import { BackHandler, FlatList, Image, StyleSheet, Text, TouchableOpacity, View 
 import * as RNFS from 'react-native-fs';
 import Async from 'react-promise';
 import { connect } from 'react-redux';
+import { bindActionCreators } from 'redux';
 import FileManagerActions from '../actions/filemanager.action';
 import { FileSystemProps, IReducer } from '../interfaces/index';
+import * as ReduxActions from './../actions';
 export class FileSystem extends Component<FileSystemProps, any> {
     constructor(props) {
         super(props);
-        this.state = {
-            pathStack: this.props.PathStack
-        };
     }
     componentDidMount() {
         BackHandler.addEventListener('hardwareBackPress', () => {
@@ -39,6 +38,7 @@ export class FileSystem extends Component<FileSystemProps, any> {
         if (selected.isDirectory()) {
             this.props.Dispatch(FileManagerActions.openDir(selected.path));
         }
+        console.log('selected', this.props);
     }
     onLongPress = (selected) => {
         if (!this.props.SelectedAction) {
@@ -59,6 +59,7 @@ export class FileSystem extends Component<FileSystemProps, any> {
 
     }
     getFileSystem = () => {
+        console.log('PATH', this.props.PathStack);
         return RNFS.readDir(_.last(this.props.PathStack))
             .then((result) => {
                 return Promise.all(result);
@@ -95,7 +96,7 @@ export class FileSystem extends Component<FileSystemProps, any> {
                         <View style={styles.dirImage}>
                             <Image
                                 style={styles.dirImage}
-                                source={require('@res/inAppImages/folder.png')}
+                                source={require('./../../res/inAppImages/folder.png')}
                             />
                         </View>
                         <Text style={[styles.directoryText]}>{_.last(item.path.split('/')) + '/'}</Text>
@@ -105,7 +106,7 @@ export class FileSystem extends Component<FileSystemProps, any> {
                         <View style={styles.fileImage}>
                             <Image
                                 style={styles.fileImage}
-                                source={require('@res/inAppImages/file.png')}
+                                source={require('./../../res/inAppImages/file.png')}
                             />
                         </View>
                         <Text style={[styles.fileText]}>{_.last(item.path.split('/'))}</Text>
@@ -121,7 +122,7 @@ export class FileSystem extends Component<FileSystemProps, any> {
                     (fileSystem) => {
                         return <FlatList
                             data={fileSystem}
-                            extraData={this.state.pathStack}
+                            extraData={this.props.PathStack}
                             keyExtractor={this._keyExtractor}
                             renderItem={this._renderItem}
                         />;
@@ -132,13 +133,18 @@ export class FileSystem extends Component<FileSystemProps, any> {
     }
 }
 function mapStateToProps(state: IReducer) {
+    console.log('in connect');
     return {
         App: state.App,
-        FileManager: state.FileManager
+        PathStack: state.FileManager.PathStack,
+        Source: state.FileManager.Source,
+        Destination: state.FileManager.Destination,
+        SelectedAction: state.FileManager.SelectedAction
     };
 }
 function mapDispatchToProps(dispatch: any) {
     return { Dispatch: dispatch };
+    // return bindActionCreators(ReduxActions, dispatch);
 }
 export default connect(mapStateToProps, mapDispatchToProps)(FileSystem);
 const styles = StyleSheet.create({

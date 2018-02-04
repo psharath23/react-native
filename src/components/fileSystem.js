@@ -21,6 +21,7 @@ export class FileSystem extends Component {
             if (selected.isDirectory()) {
                 this.props.Dispatch(FileManagerActions.openDir(selected.path));
             }
+            console.log('selected', this.props);
         };
         this.onLongPress = (selected) => {
             if (!this.props.SelectedAction) {
@@ -43,6 +44,7 @@ export class FileSystem extends Component {
             }
         };
         this.getFileSystem = () => {
+            console.log('PATH', this.props.PathStack);
             return RNFS.readDir(_.last(this.props.PathStack))
                 .then((result) => {
                 return Promise.all(result);
@@ -79,16 +81,13 @@ export class FileSystem extends Component {
             ?
                 React.createElement(View, { style: this.getStyle(item) },
                     React.createElement(View, { style: styles.dirImage },
-                        React.createElement(Image, { style: styles.dirImage, source: require('@res/inAppImages/folder.png') })),
+                        React.createElement(Image, { style: styles.dirImage, source: require('./../../res/inAppImages/folder.png') })),
                     React.createElement(Text, { style: [styles.directoryText] }, _.last(item.path.split('/')) + '/'))
             :
                 React.createElement(View, { style: this.getStyle(item) },
                     React.createElement(View, { style: styles.fileImage },
-                        React.createElement(Image, { style: styles.fileImage, source: require('@res/inAppImages/file.png') })),
+                        React.createElement(Image, { style: styles.fileImage, source: require('./../../res/inAppImages/file.png') })),
                     React.createElement(Text, { style: [styles.fileText] }, _.last(item.path.split('/'))))));
-        this.state = {
-            pathStack: this.props.PathStack
-        };
     }
     componentDidMount() {
         BackHandler.addEventListener('hardwareBackPress', () => {
@@ -105,18 +104,23 @@ export class FileSystem extends Component {
     render() {
         return (React.createElement(View, null,
             React.createElement(Async, { promise: this.getFileSystem(), then: (fileSystem) => {
-                    return React.createElement(FlatList, { data: fileSystem, extraData: this.state.pathStack, keyExtractor: this._keyExtractor, renderItem: this._renderItem });
+                    return React.createElement(FlatList, { data: fileSystem, extraData: this.props.PathStack, keyExtractor: this._keyExtractor, renderItem: this._renderItem });
                 } })));
     }
 }
 function mapStateToProps(state) {
+    console.log('in connect');
     return {
         App: state.App,
-        FileManager: state.FileManager
+        PathStack: state.FileManager.PathStack,
+        Source: state.FileManager.Source,
+        Destination: state.FileManager.Destination,
+        SelectedAction: state.FileManager.SelectedAction
     };
 }
 function mapDispatchToProps(dispatch) {
     return { Dispatch: dispatch };
+    // return bindActionCreators(ReduxActions, dispatch);
 }
 export default connect(mapStateToProps, mapDispatchToProps)(FileSystem);
 const styles = StyleSheet.create({
@@ -208,4 +212,3 @@ const styles = StyleSheet.create({
         fontWeight: 'bold'
     }
 });
-//# sourceMappingURL=fileSystem.js.map

@@ -9,6 +9,7 @@ import {
 } from 'react-native';
 import * as RNFS from 'react-native-fs';
 import { connect } from 'react-redux';
+import FileManagerActions from '../actions/filemanager.action';
 import ConfirmAction from '../components/confirmAction';
 import CustomActivityIndicator from '../components/customActivityIndicator';
 import FileSystem from '../components/fileSystem';
@@ -54,7 +55,7 @@ export class FileManager extends Component<FileManagerProps, any> {
     promptTitle = 'New Folder';
     promptPlaceHolder = 'foldername (or) folder1 name,folder2 name,...';
     _toolbarActions = () => [
-        { title: 'menu', icon: require('@res/toolbar/menu.png'), show: 'always' }
+        { title: 'menu', icon: require('./../../res/toolbar/menu.png'), show: 'always' }
     ]
     _onActionSelected = (position) => {
         let menu = this._menuDataList();
@@ -122,7 +123,8 @@ export class FileManager extends Component<FileManagerProps, any> {
                 { title: 'copy', show: 'never' },
                 { title: 'move', show: 'never' },
                 { title: 'delete', show: 'never' },
-                { title: 'properties', show: 'never' }
+                { title: 'properties', show: 'never' },
+                { title: 'new folder', show: 'never' }
             ];
         } else if (this.state.source.length === 1) {
             return [
@@ -130,12 +132,14 @@ export class FileManager extends Component<FileManagerProps, any> {
                 { title: 'move', show: 'never' },
                 { title: 'delete', show: 'never' },
                 { title: 'properties', show: 'never' },
-                { title: 'rename', show: 'never' }
+                { title: 'rename', show: 'never' },
+                { title: 'new folder', show: 'never' }
             ];
         } else {
             return [
                 { title: 'properties', show: 'never' },
-                { title: 'rename', show: 'never' }
+                { title: 'rename', show: 'never' },
+                { title: 'new folder', show: 'never' }
             ];
         }
     }
@@ -145,14 +149,13 @@ export class FileManager extends Component<FileManagerProps, any> {
         onPress: (option) => this.onActionSelected(option)
     };
     back = () => {
-        let _pathStack = this.state.pathStack;
-        if (_pathStack.length !== 1) {
-            _pathStack.pop();
+        console.log('back clicked', this.props);
+        if (this.props.PathStack.length !== 1) {
+            this.props.Dispatch(FileManagerActions.closeDir());
+            return true;
+        } else {
+            return false;
         }
-        this.setState({
-            pathStack: _pathStack
-        });
-
     }
     onActionSelected = (option) => {
         this.setState({ selectedOption: option, isMenuClicked: false });
@@ -175,6 +178,7 @@ export class FileManager extends Component<FileManagerProps, any> {
                 _destination.push(_.last(this.state.pathStack));
                 this.setState({ destination: _destination });
             }
+            default :
         }
     }
     createNewFolder = () => {
@@ -296,9 +300,9 @@ export class FileManager extends Component<FileManagerProps, any> {
                 <View>
                     <ToolbarAndroid style={styles.toolbar}
                         title='File Manager'
-                        actions={this._toolbarActions()}
+                        actions={this._menuDataList()}
                         onActionSelected={this._onActionSelected}
-                        navIcon={require('@res/toolbar/back.png')}
+                        navIcon={require('./../../res/toolbar/back.png')}
                         onIconClicked={this.back}
                     />
                 </View>
@@ -334,7 +338,10 @@ export class FileManager extends Component<FileManagerProps, any> {
 function mapStateToProps(state: IReducer) {
     return {
         App: state.App,
-        FileManager: state.FileManager
+        PathStack: state.FileManager.PathStack,
+        Source: state.FileManager.Source,
+        Destination: state.FileManager.Destination,
+        SelectedAction: state.FileManager.SelectedAction
     };
 }
 function mapDispatchToProps(dispatch: any) {

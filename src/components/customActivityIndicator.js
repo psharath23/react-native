@@ -11,7 +11,7 @@ export class CustomActivityIndicator extends Component {
         return (React.createElement(View, null,
             React.createElement(Modal, { visibile: this.props.isVisible, transparent: true },
                 React.createElement(View, null,
-                    React.createElement(Image, { style: styles.modal, source: require('@res/inAppImages/loading.gif') })))));
+                    React.createElement(Image, { style: styles.modal, source: require('./../../res/inAppImages/loading.gif') })))));
     }
 }
 function mapStateToProps(state) {
@@ -35,4 +35,3 @@ const styles = StyleSheet.create({
         left: Dimensions.get('window').width - 270
     }
 });
-//# sourceMappingURL=customActivityIndicator.js.map

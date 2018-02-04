@@ -3,6 +3,7 @@ import React, { Component } from 'react';
 import { Dimensions, StyleSheet, ToastAndroid, ToolbarAndroid, View } from 'react-native';
 import * as RNFS from 'react-native-fs';
 import { connect } from 'react-redux';
+import FileManagerActions from '../actions/filemanager.action';
 import ConfirmAction from '../components/confirmAction';
 import CustomActivityIndicator from '../components/customActivityIndicator';
 import FileSystem from '../components/fileSystem';
@@ -34,7 +35,7 @@ export class FileManager extends Component {
         this.promptTitle = 'New Folder';
         this.promptPlaceHolder = 'foldername (or) folder1 name,folder2 name,...';
         this._toolbarActions = () => [
-            { title: 'menu', icon: require('@res/toolbar/menu.png'), show: 'always' }
+            { title: 'menu', icon: require('./../../res/toolbar/menu.png'), show: 'always' }
         ];
         this._onActionSelected = (position) => {
             let menu = this._menuDataList();
@@ -106,7 +107,8 @@ export class FileManager extends Component {
                     { title: 'copy', show: 'never' },
                     { title: 'move', show: 'never' },
                     { title: 'delete', show: 'never' },
-                    { title: 'properties', show: 'never' }
+                    { title: 'properties', show: 'never' },
+                    { title: 'new folder', show: 'never' }
                 ];
             }
             else if (this.state.source.length === 1) {
@@ -115,13 +117,15 @@ export class FileManager extends Component {
                     { title: 'move', show: 'never' },
                     { title: 'delete', show: 'never' },
                     { title: 'properties', show: 'never' },
-                    { title: 'rename', show: 'never' }
+                    { title: 'rename', show: 'never' },
+                    { title: 'new folder', show: 'never' }
                 ];
             }
             else {
                 return [
                     { title: 'properties', show: 'never' },
-                    { title: 'rename', show: 'never' }
+                    { title: 'rename', show: 'never' },
+                    { title: 'new folder', show: 'never' }
                 ];
             }
         };
@@ -131,13 +135,14 @@ export class FileManager extends Component {
             onPress: (option) => this.onActionSelected(option)
         };
         this.back = () => {
-            let _pathStack = this.state.pathStack;
-            if (_pathStack.length !== 1) {
-                _pathStack.pop();
+            console.log('back clicked', this.props);
+            if (this.props.PathStack.length !== 1) {
+                this.props.Dispatch(FileManagerActions.closeDir());
+                return true;
             }
-            this.setState({
-                pathStack: _pathStack
-            });
+            else {
+                return false;
+            }
         };
         this.onActionSelected = (option) => {
             this.setState({ selectedOption: option, isMenuClicked: false });
@@ -160,6 +165,7 @@ export class FileManager extends Component {
                     _destination.push(_.last(this.state.pathStack));
                     this.setState({ destination: _destination });
                 }
+                default:
             }
         };
         this.createNewFolder = () => {
@@ -292,7 +298,7 @@ export class FileManager extends Component {
     render() {
         return (React.createElement(View, { style: styles.container },
             React.createElement(View, null,
-                React.createElement(ToolbarAndroid, { style: styles.toolbar, title: 'File Manager', actions: this._toolbarActions(), onActionSelected: this._onActionSelected, navIcon: require('@res/toolbar/back.png'), onIconClicked: this.back })),
+                React.createElement(ToolbarAndroid, { style: styles.toolbar, title: 'File Manager', actions: this._menuDataList(), onActionSelected: this._onActionSelected, navIcon: require('./../../res/toolbar/back.png'), onIconClicked: this.back })),
             React.createElement(View, null, this.state.isMenuClicked === true && React.createElement(ListMenu, Object.assign({}, this.menuData))),
             React.createElement(View, { style: this.state.selectedOption !== '' && !_.isEmpty(this.state.destination) ?
                     styles.fileSystemAfterOption :
@@ -306,7 +312,10 @@ export class FileManager extends Component {
 function mapStateToProps(state) {
     return {
         App: state.App,
-        FileManager: state.FileManager
+        PathStack: state.FileManager.PathStack,
+        Source: state.FileManager.Source,
+        Destination: state.FileManager.Destination,
+        SelectedAction: state.FileManager.SelectedAction
     };
 }
 function mapDispatchToProps(dispatch) {
@@ -412,4 +421,3 @@ const styles = StyleSheet.create({
         zIndex: 2
     }
 });
-//# sourceMappingURL=filemanager.js.map

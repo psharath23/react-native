@@ -64,4 +64,3 @@ function mapDispatchToProps(dispatch) {
     return { Dispatch: dispatch };
 }
 export default connect(mapStateToProps, mapDispatchToProps)(Prompt);
-//# sourceMappingURL=prompt.js.map

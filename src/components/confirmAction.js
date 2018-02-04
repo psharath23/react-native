@@ -53,4 +53,3 @@ const styles = StyleSheet.create({
         backgroundColor: '#a9c1e8'
     }
 });
-//# sourceMappingURL=confirmAction.js.map
