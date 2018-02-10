@@ -104,6 +104,11 @@ export class FileSystem extends Component {
     render() {
         return (React.createElement(View, null,
             React.createElement(Async, { promise: this.getFileSystem(), then: (fileSystem) => {
+                    // return (
+                    //     <View>
+                    //         <ListItem item={fileSystem} />
+                    //     </View>
+                    // );
                     return React.createElement(FlatList, { data: fileSystem, extraData: this.props.PathStack, keyExtractor: this._keyExtractor, renderItem: this._renderItem });
                 } })));
     }
@@ -115,7 +120,8 @@ function mapStateToProps(state) {
         PathStack: state.FileManager.PathStack,
         Source: state.FileManager.Source,
         Destination: state.FileManager.Destination,
-        SelectedAction: state.FileManager.SelectedAction
+        SelectedAction: state.FileManager.SelectedAction,
+        TimeStamp: new Date().getTime()
     };
 }
 function mapDispatchToProps(dispatch) {

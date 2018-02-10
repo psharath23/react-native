@@ -7,7 +7,9 @@ const initialState: IFileManagerState = {
     Destination: [],
     SelectedAction: '',
     PathStack: [RNFS.ExternalStorageDirectoryPath],
-    IsMenuClicked: false
+    IsMenuClicked: false,
+    IsPromptVisible: false,
+    NewFolderName: []
 };
 
 export function FileManager(state: IFileManagerState = initialState, action: any) {
@@ -60,8 +62,35 @@ export function FileManager(state: IFileManagerState = initialState, action: any
                 Source: []
             });
         }
+        case FileManagerActions.TOGGLE_PROMPT: {
+            return _.extend({}, state, {
+                IsPromptVisible: action.payload
+            });
+        }
+        case FileManagerActions.NEW_FOLDER_NAME: {
+            return _.extend({}, state, {
+                NewFolderName: action.payload
+            });
+        }
+        case FileManagerActions.SET_INITIAL_STATE: {
+            switch (action.payload) {
+                case 1: {
+                    return _.extend({}, state, {
+                        Source: [],
+                        Destination: [],
+                        SelectedAction: '',
+                        IsMenuClicked: false,
+                        IsPromptVisible: false,
+                        NewFolderName: []
+                    });
+                }
+                default:
+                    return _.extend({}, state, initialState);
+            }
+            // return _.extend({}, state, initialState);
+        }
         default:
-        return state;
+            return state;
     }
 }
 export default FileManager;

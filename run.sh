@@ -1,1 +1,1 @@
-gnome-terminal --tab -e "sh emulator.sh" --tab -e "react-native run-android" --tab -e "react-native log-android"
+gnome-terminal --tab -e "npm run build" --tab -e "sh emulator.sh" --tab -e "react-native run-android" --tab -e "react-native log-android"

@@ -66,3 +66,24 @@ FileManagerActions.cancelFileAction = () => {
         type: FileManagerActions.FILE_ACTION_CANCELLED
     };
 };
+FileManagerActions.TOGGLE_PROMPT = 'TOGGLE_PROMPT';
+FileManagerActions.togglePrompt = (promptStatus) => {
+    return {
+        payload: promptStatus,
+        type: FileManagerActions.TOGGLE_PROMPT
+    };
+};
+FileManagerActions.NEW_FOLDER_NAME = 'NEW_FOLDER_NAME';
+FileManagerActions.folderName = (folderName) => {
+    return {
+        payload: folderName,
+        type: FileManagerActions.NEW_FOLDER_NAME
+    };
+};
+FileManagerActions.SET_INITIAL_STATE = 'SET_INITIAL_STATE';
+FileManagerActions.setInitialState = (type) => {
+    return {
+        payload: type,
+        type: FileManagerActions.SET_INITIAL_STATE
+    };
+};

@@ -11,6 +11,7 @@ function configureStore(initialState) {
 export const store = configureStore({});
 export const persistStore = require('redux-persist').persistStore;
 export function initReduxStore(cb) {
+    console.log('initredux called');
     persistStore(store, {}, (err, state) => {
         if (err) {
             console.log(err, state);

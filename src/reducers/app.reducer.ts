@@ -1,5 +1,6 @@
-import FileManagerActions from '../actions/filemanager.action';
 import _ from 'lodash';
+import FileManagerActions from '../actions/filemanager.action';
+import AppActions from './../actions/app.actions';
 import { IAppState } from './../interfaces/app.interface';
 const initialState: IAppState = {
     SelectedApp: '',
@@ -13,8 +14,11 @@ export function App(state: IAppState = initialState, action: any) {
         case FileManagerActions.FILE_ACTION_COMPLETED: {
             return _.extend({}, state, { InTask: false });
         }
+        case AppActions.IN_TASK: {
+            return _.extend({}, state, { InTask: action.payload });
+        }
         default:
-        return state;
+            return state;
     }
 }
 export default App;

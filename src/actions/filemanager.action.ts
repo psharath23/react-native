@@ -65,4 +65,25 @@ export default class FileManagerActions {
             type: FileManagerActions.FILE_ACTION_CANCELLED
         };
     }
+    static TOGGLE_PROMPT = 'TOGGLE_PROMPT';
+    static togglePrompt = (promptStatus) => {
+        return {
+            payload: promptStatus,
+            type: FileManagerActions.TOGGLE_PROMPT
+        };
+    }
+    static NEW_FOLDER_NAME = 'NEW_FOLDER_NAME';
+    static folderName = (folderName) => {
+        return {
+            payload: folderName,
+            type: FileManagerActions.NEW_FOLDER_NAME
+        };
+    }
+    static SET_INITIAL_STATE = 'SET_INITIAL_STATE';
+    static setInitialState = (type?) => {
+        return {
+            payload: type,
+            type: FileManagerActions.SET_INITIAL_STATE
+        };
+    }
 }

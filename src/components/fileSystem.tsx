@@ -4,10 +4,9 @@ import { BackHandler, FlatList, Image, StyleSheet, Text, TouchableOpacity, View 
 import * as RNFS from 'react-native-fs';
 import Async from 'react-promise';
 import { connect } from 'react-redux';
-import { bindActionCreators } from 'redux';
 import FileManagerActions from '../actions/filemanager.action';
 import { FileSystemProps, IReducer } from '../interfaces/index';
-import * as ReduxActions from './../actions';
+import ListItem from './listItem';
 export class FileSystem extends Component<FileSystemProps, any> {
     constructor(props) {
         super(props);
@@ -120,6 +119,11 @@ export class FileSystem extends Component<FileSystemProps, any> {
                 promise={this.getFileSystem()}
                 then={
                     (fileSystem) => {
+                        // return (
+                        //     <View>
+                        //         <ListItem item={fileSystem} />
+                        //     </View>
+                        // );
                         return <FlatList
                             data={fileSystem}
                             extraData={this.props.PathStack}
@@ -139,7 +143,8 @@ function mapStateToProps(state: IReducer) {
         PathStack: state.FileManager.PathStack,
         Source: state.FileManager.Source,
         Destination: state.FileManager.Destination,
-        SelectedAction: state.FileManager.SelectedAction
+        SelectedAction: state.FileManager.SelectedAction,
+        TimeStamp: new Date().getTime()
     };
 }
 function mapDispatchToProps(dispatch: any) {

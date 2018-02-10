@@ -4,7 +4,7 @@
   "private": true,
   "scripts": {
     "tsc": "tsc",
-    "clean": "rimraf src/**/*.js && rimraf *.js",
+    "clean": "rimraf src/*.js && rimraf src/**/*.js && rimraf *.js",
     "lint": "tslint src/**/*.ts",
     "build": "npm run clean && npm run tsc --",
     "start": "node node_modules/react-native/local-cli/cli.js start",
@@ -24,6 +24,7 @@
     "redux-persist": "^5.5.0",
     "redux-promise": "^0.5.3",
     "redux-thunk": "^2.2.0",
+    "rxjs": "^5.5.6",
     "tslint": "^5.9.1",
     "typescript": "^2.6.2"
   },
