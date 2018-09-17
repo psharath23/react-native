@@ -1,7 +1,7 @@
 
 import * as RNFS from 'react-native-fs';
 import {
-    applyMiddleware, createStore
+    applyMiddleware, compose, createStore, Middleware
 } from 'redux';
 import { createLogger } from 'redux-logger';
 import promise from 'redux-promise';
@@ -15,8 +15,23 @@ const logger = createLogger();
 function configureStore(initialState: any): any {
     const _store = createStore(
         Reducer,
-        applyMiddleware(thunk, promise));
+        compose(
+            applyMiddleware(..._getMiddleware()))
+    );
     return _store;
+}
+function _getMiddleware(): Middleware[] {
+    let middleware = [
+        promise,
+        thunk
+
+    ];
+
+    if (__DEV__) {
+        middleware = [...middleware, logger];
+    }
+
+    return middleware;
 }
 export const store: {
     dispatch: any,
@@ -27,10 +42,10 @@ export const store: {
 export const persistStore = require('redux-persist').persistStore;
 
 export function initReduxStore(cb?) {
-    console.log('initredux called')
+
     persistStore(store, {}, (err: any, state?: any) => {
         if (err) {
-            console.log(err, state);
+
         } else {
             cb();
         }

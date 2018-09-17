@@ -9,7 +9,8 @@ const initialState: IFileManagerState = {
     PathStack: [RNFS.ExternalStorageDirectoryPath],
     IsMenuClicked: false,
     IsPromptVisible: false,
-    NewFolderName: []
+    NewFolderName: [],
+    ReName: ''
 };
 
 export function FileManager(state: IFileManagerState = initialState, action: any) {
@@ -70,6 +71,11 @@ export function FileManager(state: IFileManagerState = initialState, action: any
         case FileManagerActions.NEW_FOLDER_NAME: {
             return _.extend({}, state, {
                 NewFolderName: action.payload
+            });
+        }
+        case FileManagerActions.RENAME: {
+            return _.extend({}, state, {
+                ReName: action.payload
             });
         }
         case FileManagerActions.SET_INITIAL_STATE: {

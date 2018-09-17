@@ -9,12 +9,13 @@ export class CustomActivityIndicator extends Component<any, any> {
         };
     }
     render() {
-        console.log('custom', this.props);
+
         return (
             <View>
                 <Modal
-                    visibile={this.props.isVisible}
+                    visible={this.props.isVisible}
                     transparent={true}
+                    onRequestClose={() => { }}
                 >
                     <View>
                         <Image

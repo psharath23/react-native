@@ -1,5 +1,5 @@
 import React, { Component } from 'react';
-import { Button, StyleSheet, View } from 'react-native';
+import { Button, Modal, StyleSheet, Text, View } from 'react-native';
 import { connect } from 'react-redux';
 import FileManagerActions from '../actions/filemanager.action';
 import { IReducer } from '../interfaces/index';
@@ -19,22 +19,34 @@ export class ConfirmAction extends Component<any, any> {
 
     render() {
         return (
-            <View style={styles.actionBar}>
-                <View style={styles.cancelButton}>
-                    <Button
-                        title='cancel'
-                        color='#f44242'
-                        onPress={this.cancelAction.bind(this)}
-                    />
+            <Modal
+                visible={this.props.visible}
+                transparent={true}
+                onRequestClose={this.cancelAction}
+            >
+                <View style={styles.modal}>
+                    <View style={styles.modalTitle}>
+                        <Text style={styles.modalTitleText}>{this.props.title}</Text>
+                    </View>
+                    <View style={styles.button}>
+                        <View style={styles.confirmButton}>
+                            <Button
+                                title='Confirm'
+                                color='#4a9b3e'
+                                onPress={this.confirmAction.bind(this)}
+                            />
+                        </View>
+                        <View style={styles.cancelButton}>
+                            <Button
+                                title='cancel'
+                                color='#f44242'
+                                onPress={this.cancelAction.bind(this)}
+                            />
+                        </View>
+                    </View>
                 </View>
-                <View style={styles.confirmButton}>
-                    <Button
-                        title='confirm'
-                        color='#4a9b3e'
-                        onPress={this.confirmAction.bind(this)}
-                    />
-                </View>
-            </View>
+            </Modal>
+
         );
     }
 }
@@ -49,12 +61,28 @@ function mapDispatchToProps(dispatch: any) {
 }
 export default connect(mapStateToProps, mapDispatchToProps)(ConfirmAction);
 const styles = StyleSheet.create({
+    modal: {
+        display: 'flex',
+        flexDirection: 'column',
+        alignItems: 'center',
+        justifyContent: 'center',
+        borderRadius: 20,
+        padding: 20,
+        backgroundColor: '#ffffff',
+        // height: `60%`,
+        width: '80%',
+        position: 'absolute',
+        // top: Dimensions.get('screen').height - 450,
+        // left: Dimensions.get('screen').width - 310
+        top: '30%',
+        left: '10%'
+    },
     cancelButton: {
-        width: '50%',
+        // width: '25%',
         backgroundColor: '#f44242'
     },
     confirmButton: {
-        width: '50%',
+        // width: '25%',
         backgroundColor: '#4a9b3e'
     },
     cancelButtonText: {
@@ -63,8 +91,18 @@ const styles = StyleSheet.create({
     confirmButtonText: {
         color: '#ffffff'
     },
-    actionBar: {
+    button: {
         flexDirection: 'row',
         backgroundColor: '#a9c1e8'
+    },
+    modalTitleText: {
+        color: '#020202',
+        fontWeight: 'bold'
+    },
+    modalTitle: {
+        padding: 2
+    },
+    inputField: {
+        width: '100%'
     }
 });

@@ -2,12 +2,15 @@ import React, { Component } from 'react';
 import { Button, Dimensions, Modal, StyleSheet, Text, TextInput, View } from 'react-native';
 import { connect } from 'react-redux';
 import { IReducer } from '../interfaces/index';
-export class Prompt extends Component<any, any> {
+export class Rename extends Component<any, any> {
     constructor(props) {
         super(props);
         this.state = {
-            promptValue: ''
+            renameValue: ''
         };
+    }
+    componentWillMount() {
+        this.setState({ renameValue: this.props.reName });
     }
     render() {
 
@@ -24,8 +27,8 @@ export class Prompt extends Component<any, any> {
                     <View style={styles.inputField}>
                         <TextInput
                             placeholder={this.props.placeholder}
-                            onChangeText={(text) => this.setState({ promptValue: text })}
-                            value={this.state.promptValue}
+                            onChangeText={(text) => this.setState({ renameValue: text })}
+                            value={this.state.renameValue}
                         />
                     </View>
                     <View style={styles.button}>
@@ -33,7 +36,7 @@ export class Prompt extends Component<any, any> {
                             <Button
                                 title='submit'
                                 color='#4a9b3e'
-                                onPress={() => this.props.onSubmit(this.state.promptValue)}
+                                onPress={() => this.props.onSubmit(this.state.renameValue)}
                             />
                         </View>
                         <View style={styles.cancelButton}>
@@ -98,10 +101,11 @@ const styles = StyleSheet.create({
 function mapStateToProps(state: IReducer) {
     return {
         App: state.App,
-        FileManager: state.FileManager
+        FileManager: state.FileManager,
+        reName: state.FileManager.ReName
     };
 }
 function mapDispatchToProps(dispatch: any) {
     return { Dispatch: dispatch };
 }
-export default connect(mapStateToProps, mapDispatchToProps)(Prompt);
+export default connect(mapStateToProps, mapDispatchToProps)(Rename);

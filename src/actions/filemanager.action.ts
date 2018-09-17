@@ -79,6 +79,13 @@ export default class FileManagerActions {
             type: FileManagerActions.NEW_FOLDER_NAME
         };
     }
+    static RENAME = 'RENAME';
+    static reName = (name) => {
+        return {
+            payload: name,
+            type: FileManagerActions.RENAME
+        };
+    }
     static SET_INITIAL_STATE = 'SET_INITIAL_STATE';
     static setInitialState = (type?) => {
         return {

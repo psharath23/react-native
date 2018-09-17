@@ -9,14 +9,19 @@
     "build": "npm run clean && npm run tsc --",
     "start": "node node_modules/react-native/local-cli/cli.js start",
     "start-android": "react-native bundle --platform android --dev false --entry-file index.js --bundle-output android/app/src/main/assets/index.android.bundle --assets-dest android/app/src/main/res && react-native run-android",
-    "test": "jest"
+    "test": "jest",
+    "ios": "node node_modules/react-native/local-cli/cli.js run-ios",
+    "android": "node node_modules/react-native/local-cli/cli.js run-android"
   },
   "dependencies": {
-    "@types/react": "^16.0.35",
+    "@types/react": "^16.4.13",
+    "@types/react-native": "^0.56.17",
+    "@types/react-redux": "^6.0.7",
     "lodash": "^4.17.4",
     "react": "16.0.0",
     "react-native": "0.51.0",
     "react-native-fs": "^2.9.6",
+    "react-native-typescript-transformer": "^1.2.10",
     "react-promise": "^2.0.0",
     "react-redux": "^5.0.6",
     "redux": "^3.7.2",
@@ -25,17 +30,36 @@
     "redux-promise": "^0.5.3",
     "redux-thunk": "^2.2.0",
     "rxjs": "^5.5.6",
-    "tslint": "^5.9.1",
-    "typescript": "^2.6.2"
+    "tslint": "^5.11.0",
+    "tslint-eslint-rules": "^5.4.0",
+    "tslint-react": "^3.6.0",
+    "tslint-react-recommended": "^1.0.15",
+    "typescript": "^2.9.2"
   },
   "devDependencies": {
     "@types/node": "^9.4.0",
+    "@types/react-native-fs": "^2.8.2",
     "babel-jest": "22.0.4",
     "babel-preset-react-native": "4.0.0",
     "jest": "22.0.4",
     "react-test-renderer": "16.0.0"
   },
   "jest": {
-    "preset": "react-native"
+    "preset": "react-native",
+    "moduleFileExtensions": [
+      "ts",
+      "tsx",
+      "js"
+    ],
+    "transform": {
+      "^.+\\.(js)$": "<rootDir>/node_modules/babel-jest",
+      "\\.(ts|tsx)$": "<rootDir>/node_modules/ts-jest/preprocessor.js"
+    },
+    "testRegex": "(/__tests__/.*|\\.(test|spec))\\.(ts|tsx|js)$",
+    "testPathIgnorePatterns": [
+      "\\.snap$",
+      "<rootDir>/node_modules/"
+    ],
+    "cacheDirectory": ".jest/cache"
   }
 }

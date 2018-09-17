@@ -6,6 +6,7 @@ export interface IFileManagerState {
     IsMenuClicked: boolean;
     IsPromptVisible: boolean;
     NewFolderName: Array<string>;
+    ReName: String;
 }
 export interface FileManagerProps {
     Source: Array<string>;
@@ -15,6 +16,7 @@ export interface FileManagerProps {
     IsPromptVisible: boolean;
     InTask: boolean;
     NewFolderName: Array<string>;
+    ReName: String;
     Dispatch: any;
 }
 export interface FileSystemProps {
@@ -23,4 +25,5 @@ export interface FileSystemProps {
     Destination: Array<string>;
     PathStack: Array<string>;
     SelectedAction: string;
+    fileSystem: Array<any>;
 }

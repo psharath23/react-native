@@ -1,6 +1,7 @@
 import _ from 'lodash';
 import React, { Component } from 'react';
 import {
+    BackHandler,
     Dimensions,
     StyleSheet,
     ToastAndroid,
@@ -16,6 +17,7 @@ import CustomActivityIndicator from '../components/customActivityIndicator';
 import FileSystem from '../components/fileSystem';
 import ListMenu from '../components/listMenu';
 import Prompt from '../components/prompt';
+import { Rename } from '../components/rename';
 import Properties from './../components/properties';
 import { FileManagerProps, IReducer } from './../interfaces';
 export class FileManager extends Component<FileManagerProps, any> {
@@ -31,26 +33,68 @@ export class FileManager extends Component<FileManagerProps, any> {
             newFolder: [],
             isPromptVisible: false,
             isRenameClicked: false,
-            inTask: false
+            inTask: false,
+            fileSystem: []
         };
+    }
+    componentDidMount() {
+        this.getFS();
+        BackHandler.addEventListener('hardwareBackPress', () => {
+            return this.back();
+        });
+
+    }
+    componentWillUnmount() {
+
+        BackHandler.removeEventListener('hardwareBackPress', () => {
+            return this.back();
+
+        });
+    }
+    componentWillReceiveProps(nextProps) {
+        // this.getFS();
+    }
+    back = () => {
+        if (this.props.PathStack.length !== 1) {
+            this.props.Dispatch(FileManagerActions.closeDir());
+            return true;
+        } else {
+            return false;
+        }
+
     }
     onPromptCancel = () => {
         this.props.Dispatch(FileManagerActions.togglePrompt(false));
         // this.setState({ isPromptVisible: false });
     }
     onPromptSubmit = (value) => {
-        console.log('valueSSS', value);
-        if (!value) {
-            ToastAndroid.show(`No folder(s) name(s) entered`, ToastAndroid.SHORT);
-            return;
+        switch (this.props.SelectedAction) {
+            case 'new folder': {
+                if (!value) {
+                    ToastAndroid.show(`No folder(s) name(s) entered`, ToastAndroid.SHORT);
+                    return;
+                }
+                this.props.Dispatch(FileManagerActions.togglePrompt(false));
+                this.props.Dispatch(FileManagerActions.folderName(value.split(',')));
+                setTimeout(() => { this.createNewFolder(); }, 10);
+                break;
+            }
+            case 'rename': {
+                if (!value) {
+                    ToastAndroid.show(`No folder(s) name(s) entered`, ToastAndroid.SHORT);
+                    return;
+                }
+                this.props.Dispatch(FileManagerActions.togglePrompt(false));
+                this.props.Dispatch(FileManagerActions.reName(value));
+                setTimeout(() => { this.reName(); }, 10);
+                break;
+            }
+            default:
         }
-        this.props.Dispatch(FileManagerActions.togglePrompt(false));
-        this.props.Dispatch(FileManagerActions.folderName(value.split(',')));
-        setTimeout(() => { this.createNewFolder(); }, 10);
 
         // this.setState({ isPromptVisible: false, newFolder: value.split(',') },
         //     () => {
-        //         console.log('statenewfolder', this.state.newFolder);
+        //
         //         if (_.isEmpty(this.state.newFolder)) {
         //             ToastAndroid.show(`No folder(s) name(s) entered`, ToastAndroid.SHORT);
         //             return;
@@ -60,7 +104,9 @@ export class FileManager extends Component<FileManagerProps, any> {
         //     });
     }
     promptTitle = 'New Folder';
+    renameTitle = 'Rename';
     promptPlaceHolder = 'foldername (or) folder1 name,folder2 name,...';
+    renamePlaceHolder = 'name';
     _toolbarActions = () => [
         { title: 'menu', icon: require('./../../res/toolbar/menu.png'), show: 'always' }
     ]
@@ -73,7 +119,8 @@ export class FileManager extends Component<FileManagerProps, any> {
         source: this.props.Source,
         destination: this.props.Destination,
         selectedOption: this.props.SelectedAction,
-        pathStack: this.props.PathStack
+        pathStack: this.props.PathStack,
+        fileSystem: this.state.fileSystem
     })
     promptProps = () => ({
         title: this.promptTitle,
@@ -81,6 +128,19 @@ export class FileManager extends Component<FileManagerProps, any> {
         visible: this.props.IsPromptVisible,
         onCancel: this.onPromptCancel,
         onSubmit: this.onPromptSubmit
+    })
+    renameProps = () => ({
+        title: this.renameTitle,
+        placeholder: this.renamePlaceHolder,
+        visible: this.props.IsPromptVisible,
+        onCancel: this.onPromptCancel,
+        onSubmit: this.onPromptSubmit,
+        reName: this.props.ReName
+    })
+    propertiesProps = () => ({
+        title: 'Properties',
+        onCancel: () => { this.props.Dispatch(FileManagerActions.togglePrompt(false)); },
+        onSubmit: () => { this.props.Dispatch(FileManagerActions.togglePrompt(false)); }
     })
     actions = () => {
         switch (this.props.SelectedAction) {
@@ -108,7 +168,8 @@ export class FileManager extends Component<FileManagerProps, any> {
     confirmActionProps = () => ({
         setPropsToState: this.setPropsToState,
         selectedOption: this.props.SelectedAction,
-        action: this.actions()
+        action: this.actions(),
+        title: 'Are you sure'
     })
     // menuDataList = () => {
     //     if (!_.isEmpty(this.state.source) && this.state.selectedOption && this.state.selectedOption !== 'delete') {
@@ -126,7 +187,7 @@ export class FileManager extends Component<FileManagerProps, any> {
             return [
                 { title: `${this.props.SelectedAction} here`, show: 'never' }
             ];
-        } else if (!_.isEmpty(this.props.Source)) {
+        } else if (!_.isEmpty(this.props.Source) && this.props.Source.length !== 1) {
             return [
                 { title: 'copy', show: 'never' },
                 { title: 'move', show: 'never' },
@@ -146,7 +207,7 @@ export class FileManager extends Component<FileManagerProps, any> {
         } else {
             return [
                 { title: 'properties', show: 'never' },
-                { title: 'rename', show: 'never' },
+                // { title: 'rename', show: 'never' },
                 { title: 'new folder', show: 'never' }
             ];
         }
@@ -156,15 +217,6 @@ export class FileManager extends Component<FileManagerProps, any> {
     //     style: styles,
     //     onPress: (option) => this.onActionSelected(option)
     // };
-    back = () => {
-        console.log('back clicked', this.props);
-        if (this.props.PathStack.length !== 1) {
-            this.props.Dispatch(FileManagerActions.closeDir());
-            return true;
-        } else {
-            return false;
-        }
-    }
     onActionSelected = (option) => {
         this.props.Dispatch(FileManagerActions.selectedFileAction(option));
         // this.setState({ selectedOption: option, isMenuClicked: false });
@@ -182,7 +234,11 @@ export class FileManager extends Component<FileManagerProps, any> {
                 this.props.Dispatch(FileManagerActions.togglePrompt(true));
                 break;
             }
-            case 'rename': this.setState({ isRenameClicked: true });
+            case 'rename': {
+                this.props.Dispatch(FileManagerActions.reName(_.last(_.last(this.props.Source).split('/'))));
+                this.props.Dispatch(FileManagerActions.togglePrompt(true));
+                break;
+            }
             case 'move here':
             case 'copy here': {
                 this.props.Dispatch(FileManagerActions.selectDestination(_.last(this.props.PathStack)));
@@ -194,7 +250,6 @@ export class FileManager extends Component<FileManagerProps, any> {
         }
     }
     createNewFolder = () => {
-        console.log('in newfolder', this.props.NewFolderName);
         if (!_.isEmpty(this.props.Source)) {
             this.props.Dispatch(AppActions.setTaskStatus(true));
             // this.setState({ inTask: true });
@@ -202,58 +257,88 @@ export class FileManager extends Component<FileManagerProps, any> {
                 _.each(this.props.NewFolderName, (name) => {
                     RNFS.mkdir(path + '/' + name)
                         .then((dir) => {
-                            console.log(dir);
+
                             ToastAndroid.show(`new folder ${name} created at ${path}/`, ToastAndroid.SHORT);
                             Promise.resolve();
                         })
                         .catch((dir) => {
-                            console.log(dir);
+
                             ToastAndroid.show(`failed to create new folder ${name} at ${path}/`, ToastAndroid.SHORT);
                         });
                 });
             });
+            this.props.Dispatch(AppActions.setTaskStatus(false));
         } else {
+            this.props.Dispatch(AppActions.setTaskStatus(true));
             _.each(this.props.NewFolderName, (name) => {
                 RNFS.mkdir(_.last(this.props.PathStack) + '/' + name)
                     .then((dir) => {
-                        console.log(dir);
+
                         ToastAndroid.show(`new folder ${name} created at ${_.last(this.props.PathStack)}/`, ToastAndroid.SHORT);
                         Promise.resolve();
                     })
                     .catch((dir) => {
-                        console.log(dir);
+
                         ToastAndroid.show(`failed to create new folder ${name} at ${_.last(this.props.PathStack)}/`, ToastAndroid.SHORT);
                     });
             });
+            this.props.Dispatch(AppActions.setTaskStatus(false));
+        }
+        this.props.Dispatch(FileManagerActions.setInitialState(1));
+        // this.setState({ source: [], destination: [], selectedOption: '', newFolder: [], inTask: false });
+    }
+    reName = () => {
+
+        if (_.isEmpty(this.props.Source)) {
+            ToastAndroid.show(`Please select a File/Folder`, ToastAndroid.SHORT);
+            return;
+        } else {
+
+            let renameArr = _.last(this.props.Source).split('/');
+            renameArr[renameArr.length - 1] = this.props.ReName;
+            let newName = renameArr.join('/');
+            let from = _.last(_.last(this.props.Source).split('/'));
+            let to = _.last(newName.split('/'));
+            RNFS.moveFile(_.last(this.props.Source), newName)
+                .then((move) => {
+
+                    ToastAndroid.show(`${from} renamed to ${to}`, ToastAndroid.SHORT);
+                    Promise.resolve();
+                })
+                .catch((err) => {
+
+                    ToastAndroid.show(`failed to rename ${from} to ${to}`, ToastAndroid.SHORT);
+                });
         }
         this.props.Dispatch(FileManagerActions.setInitialState(1));
         // this.setState({ source: [], destination: [], selectedOption: '', newFolder: [], inTask: false });
     }
     copy = () => {
-        this.setState({ isTaskRunning: true });
+
         if (this.props.Source.length === 0) {
             ToastAndroid.show(`No file(s)/folder(s) selected`, ToastAndroid.SHORT);
             this.setState({ isTaskRunning: false });
             return;
         }
-        this.setState({ inTask: true });
+        this.props.Dispatch(AppActions.setTaskStatus(true));
         let copyCount = 0;
         _.each(this.props.Source, (source) => {
             _.each(this.props.Destination, (destination) => {
                 RNFS.copyFile(source, destination + '/' + _.last(source.split('/')))
                     .then((copy) => {
-                        console.log(copy);
+
                         ToastAndroid.show(`${_.last(source.split('/'))} copied to ${destination}`, ToastAndroid.SHORT);
                         copyCount++;
                         Promise.resolve(copyCount);
                     })
                     .catch((err) => {
-                        console.log(err);
+
                         ToastAndroid.show(`failed to copy ${_.last(source.split('/'))} to ${destination}`, ToastAndroid.SHORT);
                     });
             });
         });
         ToastAndroid.show(`total ${copyCount} file(s)/folder(s) copied out of ${this.props.Source.length}`, ToastAndroid.SHORT);
+        this.props.Dispatch(AppActions.setTaskStatus(false));
         this.props.Dispatch(FileManagerActions.setInitialState());
         // this.setState({ source: [], destination: [], selectedOption: '', inTask: false });
     }
@@ -262,23 +347,24 @@ export class FileManager extends Component<FileManagerProps, any> {
             ToastAndroid.show(`No file(s)/folder(s) selected`, ToastAndroid.SHORT);
             return;
         }
-        this.setState({ inTask: true });
+        this.props.Dispatch(AppActions.setTaskStatus(true));
         let moveCount = 0;
         _.each(this.props.Source, (source) => {
             _.each(this.props.Destination, (destination) => {
                 RNFS.moveFile(source, destination + '/' + _.last(source.split('/')))
                     .then((move) => {
-                        console.log(move);
+
                         ToastAndroid.show(`${_.last(source.split('/'))} moved to ${destination}`, ToastAndroid.SHORT);
                         moveCount++;
                         Promise.resolve();
                     })
                     .catch((err) => {
-                        console.log(err);
+
                         ToastAndroid.show(`failed to move ${_.last(source.split('/'))} to ${destination}`, ToastAndroid.SHORT);
                     });
             });
         });
+        this.props.Dispatch(AppActions.setTaskStatus(false));
         ToastAndroid.show(`total ${moveCount} file(s)/folder(s) moved out of ${this.props.Source.length}`, ToastAndroid.SHORT);
         // this.setState({ source: [], destination: [], selectedOption: '', inTask: false });
         this.props.Dispatch(FileManagerActions.setInitialState());
@@ -293,12 +379,12 @@ export class FileManager extends Component<FileManagerProps, any> {
         _.each(this.props.Source, (source) => {
             RNFS.unlink(source)
                 .then((res) => {
-                    console.log(res);
+
                     ToastAndroid.show(`${source} deleted`, ToastAndroid.SHORT);
                     deletedCount++;
                 })
                 .catch((err) => {
-                    console.log(err);
+
                     ToastAndroid.show(`failed to delete ${source}`, ToastAndroid.SHORT);
                 });
         });
@@ -312,8 +398,14 @@ export class FileManager extends Component<FileManagerProps, any> {
     setPropsToState = (props, callback) => {
         this.setState(props, callback && callback());
     }
+    getFS = async () => {
+        this.props.Dispatch(AppActions.setTaskStatus(true));
+        let fileSystem = await RNFS.readDir(_.last(this.props.PathStack));
+        this.props.Dispatch(AppActions.setTaskStatus(false));
+        this.setState({ fileSystem });
+    }
     render() {
-        console.log('PROPS', this.props);
+
         return (
             <View style={styles.container}>
                 <View>
@@ -335,21 +427,26 @@ export class FileManager extends Component<FileManagerProps, any> {
                         styles.fileSystemAfterOption :
                         styles.fileSystemBeforeOption
                 }>
-                    <FileSystem {...this.fileSystemProps() } />
+                    <FileSystem {...this.fileSystemProps()} />
                 </View>
                 <View style={styles.confirmAction}>
                     {
-                        this.props.SelectedAction !== '' && !_.isEmpty(this.props.Destination) && <ConfirmAction {...this.confirmActionProps() } />
+                        this.props.SelectedAction !== '' && !_.isEmpty(this.props.Destination) && <ConfirmAction {...this.confirmActionProps()} />
                     }
                 </View>
                 <View>
                     {
-                        this.props.IsPromptVisible && this.props.SelectedAction === 'new folder' && <Prompt {...this.promptProps() } />
+                        this.props.IsPromptVisible && this.props.SelectedAction === 'new folder' && <Prompt {...this.promptProps()} />
                     }
                 </View>
                 <View>
                     {
-                        this.props.IsPromptVisible && this.props.SelectedAction === 'properties' && <Properties />
+                        this.props.IsPromptVisible && this.props.SelectedAction === 'rename' && <Rename {...this.renameProps()} />
+                    }
+                </View>
+                <View>
+                    {
+                        this.props.IsPromptVisible && this.props.SelectedAction === 'properties' && <Properties {...this.propertiesProps()} />
                     }
                 </View>
                 <View >
@@ -368,7 +465,7 @@ function mapStateToProps(state: IReducer) {
         IsPromptVisible: state.FileManager.IsPromptVisible,
         InTask: state.App.InTask,
         NewFolderName: state.FileManager.NewFolderName,
-        TimeStamp: new Date().getTime()
+        ReName: state.FileManager.ReName
     };
 }
 function mapDispatchToProps(dispatch: any) {

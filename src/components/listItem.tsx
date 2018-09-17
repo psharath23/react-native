@@ -1,3 +1,4 @@
+import _ from 'lodash';
 import React, { Component } from 'react';
 import { Image, StyleSheet, Text, TouchableOpacity, View } from 'react-native';
 import { connect } from 'react-redux';
@@ -9,15 +10,16 @@ interface IListItem {
     Source: any;
     SelectedAction: any;
     Dispatch: any;
+    onLongPress: any;
+    onPress: any;
 }
 export class ListItem extends Component<IListItem, any> {
     constructor(props) {
         super(props);
-        console.log('LISTITEM--->', this.props.item.path);
     }
     render() {
         return (
-            <TouchableOpacity onLongPress={this.onLongPress.bind(this, this.props.item)} onPress={this.onPress.bind(this, this.props.item)}>
+            <TouchableOpacity key={this.props.item.path} onLongPress={this.onLongPress.bind(this, this.props.item)} onPress={this.onPress.bind(this, this.props.item)}>
                 {
                     this.props.item.isDirectory()
                         ?
@@ -66,39 +68,41 @@ export class ListItem extends Component<IListItem, any> {
         }
     }
     onPress = (selected) => {
-        if (selected.isDirectory()) {
-            this.props.Dispatch(FileManagerActions.openDir(selected.path));
-        }
-        console.log('selected', this.props);
+        console.log('inState', selected);
+        return this.props.onPress(selected);
+        // if (selected.isDirectory()) {
+        //     this.props.Dispatch(FileManagerActions.openDir(selected.path));
+        // }
+        //
     }
     onLongPress = (selected) => {
-        if (!this.props.SelectedAction) {
-            let isAlreadySelected = this.props.Source.indexOf(selected.path);
-            if (isAlreadySelected >= 0) {
-                this.props.Dispatch(FileManagerActions.deSelectSource(selected.path));
-            } else {
-                this.props.Dispatch(FileManagerActions.selectSource(selected.path));
-            }
-        } else {
-            let isAlreadySelected = this.props.Destination.indexOf(selected.path);
-            if (isAlreadySelected >= 0) {
-                this.props.Dispatch(FileManagerActions.deSelectDestination(selected.path));
-            } else {
-                this.props.Dispatch(FileManagerActions.selectDestination(selected.path));
-            }
-        }
+        return this.props.onLongPress(selected);
+        // if (!this.props.SelectedAction) {
+        //     let isAlreadySelected = this.props.Source.indexOf(selected.path);
+        //     if (isAlreadySelected >= 0) {
+        //         this.props.Dispatch(FileManagerActions.deSelectSource(selected.path));
+        //     } else {
+        //         this.props.Dispatch(FileManagerActions.selectSource(selected.path));
+        //     }
+        // } else {
+        //     let isAlreadySelected = this.props.Destination.indexOf(selected.path);
+        //     if (isAlreadySelected >= 0) {
+        //         this.props.Dispatch(FileManagerActions.deSelectDestination(selected.path));
+        //     } else {
+        //         this.props.Dispatch(FileManagerActions.selectDestination(selected.path));
+        //     }
+        // }
 
     }
 }
 function mapStateToProps(state: IReducer) {
-    console.log('in connect');
+
     return {
         App: state.App,
         PathStack: state.FileManager.PathStack,
         Source: state.FileManager.Source,
         Destination: state.FileManager.Destination,
-        SelectedAction: state.FileManager.SelectedAction,
-        TimeStamp: new Date().getTime()
+        SelectedAction: state.FileManager.SelectedAction
     };
 }
 function mapDispatchToProps(dispatch: any) {
@@ -146,5 +150,13 @@ const styles: any = StyleSheet.create({
         paddingLeft: 10,
         height: 40,
         width: 40
+    },
+    listItem: {
+        flexDirection: 'row',
+        height: 50,
+        borderStyle: 'solid',
+        borderColor: 'black',
+        borderRadius: 5,
+        margin: 2
     }
 });

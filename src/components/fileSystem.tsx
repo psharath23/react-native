@@ -1,43 +1,25 @@
 import _ from 'lodash';
 import React, { Component } from 'react';
-import { BackHandler, FlatList, Image, StyleSheet, Text, TouchableOpacity, View } from 'react-native';
+import { BackHandler, FlatList, Image, ScrollView, StyleSheet, Text, TouchableOpacity, View } from 'react-native';
 import * as RNFS from 'react-native-fs';
 import Async from 'react-promise';
 import { connect } from 'react-redux';
+import AppActions from '../actions/app.actions';
 import FileManagerActions from '../actions/filemanager.action';
 import { FileSystemProps, IReducer } from '../interfaces/index';
 import ListItem from './listItem';
 export class FileSystem extends Component<FileSystemProps, any> {
     constructor(props) {
         super(props);
-    }
-    componentDidMount() {
-        BackHandler.addEventListener('hardwareBackPress', () => {
-            return this.back();
-        });
-        console.log('did mount');
-    }
-    componentWillUnmount() {
-        console.log('un mount');
-        BackHandler.removeEventListener('hardwareBackPress', () => {
-            return this.back();
-
-        });
-    }
-    back = () => {
-        if (this.props.PathStack.length !== 1) {
-            this.props.Dispatch(FileManagerActions.closeDir());
-            return true;
-        } else {
-            return false;
-        }
-
+        this.state = {
+            fileSystem: []
+        };
     }
     onPress = (selected) => {
+        console.log('inProps', selected);
         if (selected.isDirectory()) {
             this.props.Dispatch(FileManagerActions.openDir(selected.path));
         }
-        console.log('selected', this.props);
     }
     onLongPress = (selected) => {
         if (!this.props.SelectedAction) {
@@ -57,8 +39,9 @@ export class FileSystem extends Component<FileSystemProps, any> {
         }
 
     }
+
     getFileSystem = () => {
-        console.log('PATH', this.props.PathStack);
+
         return RNFS.readDir(_.last(this.props.PathStack))
             .then((result) => {
                 return Promise.all(result);
@@ -115,7 +98,9 @@ export class FileSystem extends Component<FileSystemProps, any> {
     )
     render() {
         return (
-            <View><Async
+            <ScrollView>
+                <View style={styles.fileList}>
+                    {/* <Async
                 promise={this.getFileSystem()}
                 then={
                     (fileSystem) => {
@@ -131,20 +116,37 @@ export class FileSystem extends Component<FileSystemProps, any> {
                             renderItem={this._renderItem}
                         />;
                     }
-                } />
-            </View>
+                } /> */}
+                    {
+
+                        this.props.fileSystem.length > 0 && this.props.fileSystem.map((fs) => {
+
+                            return (
+                                <View key={fs.path}>
+                                    <ListItem item={fs} onLongPress={this.onLongPress} onPress={this.onPress} />
+                                </View>
+                            );
+                        })
+                    }
+                    {
+                        this.props.fileSystem.length === 0 &&
+                        <View style={styles.noFS}>
+                            <Text style={styles.noFSText}>No File(s)/Folder(s)</Text>
+                        </View>
+                    }
+                </View>
+            </ScrollView>
         );
     }
 }
 function mapStateToProps(state: IReducer) {
-    console.log('in connect');
+
     return {
         App: state.App,
         PathStack: state.FileManager.PathStack,
         Source: state.FileManager.Source,
         Destination: state.FileManager.Destination,
-        SelectedAction: state.FileManager.SelectedAction,
-        TimeStamp: new Date().getTime()
+        SelectedAction: state.FileManager.SelectedAction
     };
 }
 function mapDispatchToProps(dispatch: any) {
@@ -158,6 +160,10 @@ const styles = StyleSheet.create({
         // justifyContent: 'center',
         // alignItems: 'center',
         backgroundColor: '#303a4c'
+    },
+    fileList: {
+        overflow: 'scroll',
+        height: '100%'
     },
     listItem: {
         flexDirection: 'row',
@@ -241,5 +247,14 @@ const styles = StyleSheet.create({
     operationText: {
         color: '#ffffff',
         fontWeight: 'bold'
+    },
+    noFS: {
+        justifyContent: 'center',
+        alignItems: 'center',
+        padding: 10
+    },
+    noFSText: {
+        color: '#536584'
     }
+
 });
